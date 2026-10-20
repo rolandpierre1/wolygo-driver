@@ -9,6 +9,22 @@ rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
+// Compat AGP 8: donne un namespace aux anciens plugins qui n'en ont pas
+subprojects { sub ->
+    sub.pluginManager.withPlugin("com.android.library") {
+        def ext = sub.extensions.findByName("android")
+        if (ext != null && (ext.namespace == null || ext.namespace.toString().isEmpty())) {
+            def manifest = sub.file("src/main/AndroidManifest.xml")
+            def ns = null
+            if (manifest.exists()) {
+                def m = (manifest.text =~ /package\s*=\s*"([^"]+)"/)
+                if (m.find()) ns = m.group(1)
+            }
+            ext.namespace = ns ?: sub.group.toString()
+        }
+    }
+}
 subprojects {
     project.evaluationDependsOn(':app')
 }
