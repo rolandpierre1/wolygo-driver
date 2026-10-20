@@ -1,0 +1,238 @@
+{
+  "project_info": {
+    "project_number": "918780868259",
+    "firebase_url": "https://woligo-7b608-default-rtdb.firebaseio.com",
+    "project_id": "woligo-7b608",
+    "storage_bucket": "woligo-7b608.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918780868259:android:0c64ed770e2a843b813116",
+        "android_client_info": {
+          "package_name": "com.mycompany.wolygo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918780868259-kpjvprnbdj6prvtsktgv9ffjgqi68sg0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.wolygo",
+            "certificate_hash": "e63671c70d98a1e3c2921175d3c609ef350084ee"
+          }
+        },
+        {
+          "client_id": "918780868259-llovbivhq6fmvnvhtq9rpvgji0tdcije.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.wolygo",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5GBe3nQFPSwH6GdICd0s34fXkQahCGe8"
+        },
+        {
+          "current_key": "AIzaSyBplSwA-y7k0LJRD0q7nBaZND-1oE4Dm3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "918780868259-2th9fafof1mhcki1cfvjdel6njq6caha.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.wolygo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918780868259:android:7b4c13c4822c0426813116",
+        "android_client_info": {
+          "package_name": "com.wolygo.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5GBe3nQFPSwH6GdICd0s34fXkQahCGe8"
+        },
+        {
+          "current_key": "AIzaSyBplSwA-y7k0LJRD0q7nBaZND-1oE4Dm3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "918780868259-2th9fafof1mhcki1cfvjdel6njq6caha.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.wolygo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918780868259:android:280828eb8c9b3e8b813116",
+        "android_client_info": {
+          "package_name": "com.wolygo.driverapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918780868259-ms7lvn6fftl37no95qredatv0kda32tj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wolygo.driverapp",
+            "certificate_hash": "fe5f0fb7388fe74f3f1219e18b43cd02bc9fc6f0"
+          }
+        },
+        {
+          "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5GBe3nQFPSwH6GdICd0s34fXkQahCGe8"
+        },
+        {
+          "current_key": "AIzaSyBplSwA-y7k0LJRD0q7nBaZND-1oE4Dm3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "918780868259-2th9fafof1mhcki1cfvjdel6njq6caha.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.wolygo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918780868259:android:08f14b6c5734a0f9813116",
+        "android_client_info": {
+          "package_name": "com.wolygo.rider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5GBe3nQFPSwH6GdICd0s34fXkQahCGe8"
+        },
+        {
+          "current_key": "AIzaSyBplSwA-y7k0LJRD0q7nBaZND-1oE4Dm3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "918780868259-2th9fafof1mhcki1cfvjdel6njq6caha.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.wolygo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918780868259:android:abdaf8a52e3c65dd813116",
+        "android_client_info": {
+          "package_name": "com.wolygo.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918780868259-r1f0un03g005v1ovaj1qnvsr8vrpqbbn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wolygo.user",
+            "certificate_hash": "fe5f0fb7388fe74f3f1219e18b43cd02bc9fc6f0"
+          }
+        },
+        {
+          "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5GBe3nQFPSwH6GdICd0s34fXkQahCGe8"
+        },
+        {
+          "current_key": "AIzaSyBplSwA-y7k0LJRD0q7nBaZND-1oE4Dm3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918780868259-v7l27vej16uqdnq868t5u5vjc3pnaalh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "918780868259-2th9fafof1mhcki1cfvjdel6njq6caha.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.wolygo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

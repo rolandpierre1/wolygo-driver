@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>918780868259-4monru4j8cuukio6809rqtk5tutpbko7.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.918780868259-4monru4j8cuukio6809rqtk5tutpbko7</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>918780868259-kpjvprnbdj6prvtsktgv9ffjgqi68sg0.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDPHIHA8aVl7NV9RScHI_Wf1MhuEo_emVI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>918780868259</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.wolygo.driverapp</string>
+	<key>PROJECT_ID</key>
+	<string>woligo-7b608</string>
+	<key>STORAGE_BUCKET</key>
+	<string>woligo-7b608.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:918780868259:ios:33dc96533fa68e9b813116</string>
+	<key>DATABASE_URL</key>
+	<string>https://woligo-7b608-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
