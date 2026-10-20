@@ -13,6 +13,13 @@ class ProfileStatusCardWidget extends StatelessWidget {
   final ProfileController profileController;
   const ProfileStatusCardWidget({super.key, required this.profileController});
 
+  /// Ferme toujours la fenetre de chargement (meme si une notification est affichee).
+  void _closeLoader() {
+    if (Get.isDialogOpen ?? false) {
+      Navigator.of(Get.overlayContext ?? Get.context!, rootNavigator: true).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -82,19 +89,19 @@ class ProfileStatusCardWidget extends StatelessWidget {
               onToggle: (val) async {
                 if(GetPlatform.isIOS){
                   Get.dialog(const LoaderWidget(), barrierDismissible: false);
-                  await profileController.profileOnlineOffline(val).then((value){
-                    if(value.statusCode == 200){
-                      Get.back();
-                    }
-                  });
+                  try {
+                    await profileController.profileOnlineOffline(val);
+                  } finally {
+                    _closeLoader();
+                  }
                 }else{
                   Get.find<LocationController>().checkPermission(() async {
                     Get.dialog(const LoaderWidget(), barrierDismissible: false);
-                    await profileController.profileOnlineOffline(val).then((value){
-                      if(value.statusCode == 200){
-                        Get.back();
-                      }
-                    });
+                    try {
+                      await profileController.profileOnlineOffline(val);
+                    } finally {
+                      _closeLoader();
+                    }
                   });
                 }
               },),

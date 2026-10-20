@@ -167,7 +167,6 @@ class ProfileController extends GetxController implements GetxService{
         isOnline = "0";
       }
     }else{
-      Get.back();
       isLoading = false;
       ApiChecker.checkApi(response);
     }
