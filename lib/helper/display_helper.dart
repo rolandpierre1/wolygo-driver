@@ -12,34 +12,31 @@ void customPrint(String message) {
   }
 }
 
-void showCustomSnackBar(String message, {bool isError = true, int seconds = 3,String? subMessage}) {
-  Get.closeCurrentSnackbar();
-  Get.showSnackbar(GetSnackBar(
-    dismissDirection: DismissDirection.horizontal,
-    margin: const EdgeInsets.all(Dimensions.paddingSizeSmall).copyWith(
-      right: ResponsiveHelper.isDesktop ? Get.context!.width*0.7 : Dimensions.paddingSizeSmall,
-    ),
-    duration: Duration(seconds: seconds),
-    backgroundColor: Get.isDarkMode ? Colors.white : Theme.of(Get.context!).textTheme.titleMedium!.color!,
-    borderRadius: Dimensions.paddingSizeSmall,
-    messageText: Row(children: [
-      Image.asset(isError ? Images.errorMessageIcon : Images.successMessageIcon,height: 20,width: 20,),
-
-      const SizedBox(width: Dimensions.paddingSize,),
-      Expanded(child: SizedBox(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(message, style: textMedium.copyWith(color: Get.isDarkMode ? Theme.of(Get.context!).textTheme.bodySmall!.color : Colors.white)),
-        subMessage != null ?
-        Text(
-            subMessage,
-            style: textMedium.copyWith(color: Get.isDarkMode ?
-            Theme.of(Get.context!).textTheme.bodySmall!.color!.withOpacity(0.75) :
-            Colors.white.withOpacity(0.75),
-            ),
-        ) : const SizedBox(),
-
-      ]))),
-
-    ]),
-
-  ));
+void showCustomSnackBar(String message, {bool isError = true, int seconds = 3, String? subMessage}) {
+  // Version robuste (compatible Flutter recent) : SnackBar Material au lieu de GetSnackBar.
+  try {
+    final BuildContext? ctx = Get.overlayContext ?? Get.context;
+    final ScaffoldMessengerState? messenger = ctx != null ? ScaffoldMessenger.maybeOf(ctx) : null;
+    if (messenger != null) {
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: seconds),
+        backgroundColor: isError ? const Color(0xFFB3261E) : const Color(0xFF1B7F4B),
+        margin: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.paddingSizeSmall)),
+        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(message, style: textMedium.copyWith(color: Colors.white)),
+          if (subMessage != null)
+            Text(subMessage, style: textMedium.copyWith(color: Colors.white.withOpacity(0.85))),
+        ]),
+      ));
+      return;
+    }
+  } catch (_) {}
+  // Secours : ancienne methode
+  try {
+    Get.closeCurrentSnackbar();
+    Get.snackbar(isError ? 'Erreur' : 'OK', message, duration: Duration(seconds: seconds), snackPosition: SnackPosition.TOP);
+  } catch (_) {}
 }
