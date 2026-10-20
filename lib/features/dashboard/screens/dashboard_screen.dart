@@ -61,12 +61,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           body: Stack(children: [
               PageStorage(bucket: bucket, child: item[menuController.currentTab].screen),
               Positioned(child: Align(alignment: Alignment.bottomCenter,
-                child: Padding(padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                child: SafeArea(top: false, child: Padding(padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
                   child: Container(height: 65, decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Theme.of(context).primaryColor,
                       boxShadow: [BoxShadow(offset: const Offset(0,4), blurRadius: 3, color: Colors.black.withOpacity(0.3))]),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: generateBottomNavigationItems(menuController, item))))))
+                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: generateBottomNavigationItems(menuController, item)))))))
             ],
           ),
         );
