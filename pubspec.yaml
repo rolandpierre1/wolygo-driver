@@ -73,7 +73,7 @@ dependencies:
   phone_numbers_parser: ^9.0.1
   flutter_inappwebview_ios: ^1.1.2
   flutter_downloader: ^1.11.8
-  open_file_plus: ^3.4.1
+  open_filex: ^4.7.0
 
 
 dev_dependencies:

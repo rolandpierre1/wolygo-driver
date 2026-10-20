@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ride_sharing_user_app/data/api_checker.dart';
@@ -232,7 +232,7 @@ class HelpAndSupportController extends GetxController implements GetxService{
 
         if (fileExists) {
           ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(content: Text('file_already_downloaded'.tr)));
-          await OpenFile.open(filePathName);
+          await OpenFilex.open(filePathName);
         } else {
           apiResponse.listen((d) => downloadData.addAll(d), onDone: () {
             savedFile.writeAsBytes(downloadData);
@@ -253,7 +253,7 @@ class HelpAndSupportController extends GetxController implements GetxService{
 
       if(fileExists) {
         showCustomSnackBar('file_already_downloaded'.tr);
-        await OpenFile.open(filePathName);
+        await OpenFilex.open(filePathName);
       } else{
         task  = await FlutterDownloader.enqueue(
           url: url,
