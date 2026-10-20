@@ -4,7 +4,7 @@ import 'package:ride_sharing_user_app/util/images.dart';
 
 class AppConstants {
   static const String appName = 'Wolygo Driver';
-  static const String baseUrl = 'https://6am.one/drivemond/roland-44164';
+  static const String baseUrl = 'https://wolygo.com';
   static const String polylineMapKey = 'AIzaSyCGSZyU5GjFtJuay5jjqRD-xIr3XhGu1Ek';
   static const double appVersion = 14;   /// Flutter SDK 3.24.0
   static const String configUri = '/api/driver/configuration';
