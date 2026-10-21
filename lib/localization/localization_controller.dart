@@ -13,7 +13,7 @@ class LocalizationController extends GetxController  implements GetxService{
     loadCurrentLanguage();
   }
 
-  Locale _locale = Locale(AppConstants.languages[0].languageCode, AppConstants.languages[0].countryCode);
+  Locale _locale = Locale(AppConstants.defaultLanguage.languageCode, AppConstants.defaultLanguage.countryCode);
   bool _isLtr = true;
   int _selectIndex = 0;
   List<LanguageModel> _languages = [];
@@ -34,8 +34,8 @@ class LocalizationController extends GetxController  implements GetxService{
   }
 
   void loadCurrentLanguage() async {
-    _locale = Locale(sharedPreferences.getString(AppConstants.languageCode) ?? AppConstants.languages[0].languageCode,
-        sharedPreferences.getString(AppConstants.countryCode) ?? AppConstants.languages[0].countryCode);
+    _locale = Locale(sharedPreferences.getString(AppConstants.languageCode) ?? AppConstants.defaultLanguage.languageCode,
+        sharedPreferences.getString(AppConstants.countryCode) ?? AppConstants.defaultLanguage.countryCode);
     _isLtr = !intl.Bidi.isRtlLanguage(_locale.languageCode);
     update();
   }
