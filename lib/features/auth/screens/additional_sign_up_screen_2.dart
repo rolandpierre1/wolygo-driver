@@ -272,7 +272,12 @@ class AdditionalSignUpScreen2 extends StatelessWidget {
                                 if(authController.isParcelShare){
                                   services.add('parcel');
                                 }
-                                String? deviceToken = await FirebaseMessaging.instance.getToken();
+                                String? deviceToken;
+                                try {
+                                  deviceToken = await FirebaseMessaging.instance.getToken().timeout(const Duration(seconds: 5));
+                                } catch (_) {
+                                  deviceToken = null;
+                                }
                                 SignUpBody signUpBody = SignUpBody(
                                     email: email,
                                     address: address,
