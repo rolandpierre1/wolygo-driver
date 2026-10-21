@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:ride_sharing_user_app/helper/ride_alert_sound.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -92,8 +93,7 @@ class NotificationHelper {
         if (Get.find<SplashController>().pusherConnectionStatus == null || Get.find<SplashController>().pusherConnectionStatus == 'Disconnected') {
           if (message.data['action'] == "new_ride_request_notification") {
             Get.find<RideController>().getPendingRideRequestList(1);
-            AudioPlayer audio = AudioPlayer();
-            audio.play(AssetSource('notification.wav'));
+            RideAlertSound.play();
             Get.find<RideController>().setRideId(message.data['ride_request_id']);
             Get.find<RideController>().getRideDetailBeforeAccept(message.data['ride_request_id']).then((value) {
               if (value.statusCode == 200) {

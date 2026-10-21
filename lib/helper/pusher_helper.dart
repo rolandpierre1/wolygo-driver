@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_pusher_channels/dart_pusher_channels.dart';
+import 'package:ride_sharing_user_app/helper/ride_alert_sound.dart';
 import 'package:get/get.dart';
 import 'package:ride_sharing_user_app/features/auth/controllers/auth_controller.dart';
 import 'package:ride_sharing_user_app/features/map/controllers/map_controller.dart';
@@ -135,8 +135,7 @@ class PusherHelper{
       if(driverTripSubscribe.currentStatus == null){
         driverTripSubscribe.subscribeIfNotUnsubscribed();
         driverTripSubscribe.bind("customer-trip-request.$id").listen((event) {
-          AudioPlayer audio = AudioPlayer();
-          audio.play(AssetSource('notification.wav'));
+          RideAlertSound.play();
           Get.find<RideController>().getPendingRideRequestList(1);
           Get.find<RideController>().setRideId(jsonDecode(event.data!)['trip_id']);
           Get.find<RideController>().getRideDetailBeforeAccept(jsonDecode(event.data!)['trip_id']).then((value){
@@ -174,6 +173,7 @@ class PusherHelper{
       if(customerInitialTripCancelChannel.currentStatus == null){
         customerInitialTripCancelChannel.subscribe();
         customerInitialTripCancelChannel.bind("customer-trip-cancelled.$tripId.$userId").listen((event) {
+          RideAlertSound.stop();
           Get.find<RideController>().getPendingRideRequestList(1).then((value){
             if(value.statusCode == 200){
               Get.find<RiderMapController>().setRideCurrentState(RideState.initial);
@@ -207,6 +207,7 @@ class PusherHelper{
       if(anotherDriverAcceptedTripChannel.currentStatus == null){
         anotherDriverAcceptedTripChannel.subscribe();
         anotherDriverAcceptedTripChannel.bind("another-driver-trip-accepted.$tripId.$userId").listen((event) {
+          RideAlertSound.stop();
           Get.find<RideController>().getPendingRideRequestList(1).then((value){
             if(value.statusCode == 200){
               Get.find<RiderMapController>().setRideCurrentState(RideState.initial);

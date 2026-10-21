@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:ride_sharing_user_app/helper/ride_alert_sound.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -251,6 +252,7 @@ class RideController extends GetxController implements GetxService{
   String? onPressedTripId ;
   Future<Response> tripAcceptOrRejected(String tripId, String type, {bool fromList = true, int index = 0}) async {
     onPressedTripId = tripId;
+    RideAlertSound.stop();
 
       accepting = true;
       update();

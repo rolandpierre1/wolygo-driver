@@ -103,7 +103,7 @@ class MyApp extends StatelessWidget {
             defaultTransition: Transition.fade,
             transitionDuration: const Duration(milliseconds: 500),
               builder:(context,child){
-                return MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling), child: GetBuilder<RideController>(
+                return MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling), child: ColoredBox(color: Theme.of(context).scaffoldBackgroundColor, child: SafeArea(top: false, left: false, right: false, child: GetBuilder<RideController>(
                   builder: (rideController) {
                     return Stack(children: [
                         child!,
@@ -141,7 +141,7 @@ class MyApp extends StatelessWidget {
                       ],
                     );
                   }
-                ));
+                ))));
               }
           );
         });
