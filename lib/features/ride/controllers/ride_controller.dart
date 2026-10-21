@@ -611,7 +611,8 @@ class RideController extends GetxController implements GetxService{
 
     bool isUnpaidCompleted() => trip.currentStatus == 'completed' && trip.paymentStatus == 'unpaid';
 
-    bool isUnpaidCancelledByCustomer() => trip.currentStatus == 'cancelled' && trip.paymentStatus == 'unpaid' && trip.cancelledBy == 'customer';
+    // Une course annulée par le client ne compte comme "en cours" que s'il reste des frais à encaisser.
+    bool isUnpaidCancelledByCustomer() => trip.currentStatus == 'cancelled' && trip.paymentStatus == 'unpaid' && trip.cancelledBy == 'customer' && (double.tryParse(trip.paidFare ?? '0') ?? 0) > 0;
 
     if (isOngoingOrAccepted() || isUnpaidCompleted() || (isUnpaidCancelledByCustomer() && trip.type != 'parcel')) {
       return 1;

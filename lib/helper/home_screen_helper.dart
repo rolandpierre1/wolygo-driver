@@ -19,7 +19,8 @@ class HomeScreenHelper {
             (
                 Get.find<RideController>().ongoingTrip![0].currentStatus =='cancelled' &&
                     Get.find<RideController>().ongoingTrip![0].paymentStatus == 'unpaid' &&
-                    Get.find<RideController>().ongoingTrip![0].cancelledBy == 'customer'
+                    Get.find<RideController>().ongoingTrip![0].cancelledBy == 'customer' &&
+                    (double.tryParse(Get.find<RideController>().ongoingTrip![0].paidFare ?? '0') ?? 0) > 0
             ) && Get.find<RideController>().ongoingTrip![0].type != 'parcel'
     ) ? 1 : 0;
     int parcelCount = Get.find<RideController>().parcelListModel?.totalSize?? 0;
