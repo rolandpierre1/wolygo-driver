@@ -9,6 +9,8 @@ import 'package:ride_sharing_user_app/features/auth/domain/services/auth_service
 import 'package:ride_sharing_user_app/features/map/controllers/otp_time_count_Controller.dart';
 import 'package:ride_sharing_user_app/features/out_of_zone/controllers/out_of_zone_controller.dart';
 import 'package:ride_sharing_user_app/features/splash/domain/models/config_model.dart';
+import 'package:ride_sharing_user_app/features/profile/domain/models/vehicle_brand_model.dart';
+import 'package:ride_sharing_user_app/features/profile/domain/models/categoty_model.dart';
 import 'package:ride_sharing_user_app/helper/country_code_picke.dart';
 import 'package:ride_sharing_user_app/helper/display_helper.dart';
 import 'package:ride_sharing_user_app/helper/pusher_helper.dart';
@@ -90,13 +92,76 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
+
+  // ---- Inscription chauffeur : étape Véhicule (WolyGo) ----
+  List<Brand> signupBrands = [];
+  List<VehicleModels> signupModels = [];
+  List<Category> signupCategories = [];
+  Brand? signupBrand;
+  VehicleModels? signupModel;
+  Category? signupCategory;
+  String signupFuel = 'petrol';
+  bool signupOptionsLoading = false;
+  List<XFile> vehicleDocImages = [];
+  TextEditingController vehiclePlateController = TextEditingController();
+  TextEditingController vehicleExpireController = TextEditingController();
+
+  Future<void> loadSignupVehicleOptions() async {
+    if(signupBrands.isNotEmpty && signupCategories.isNotEmpty) { return; }
+    signupOptionsLoading = true;
+    update();
+    try {
+      final api = Get.find<ApiClient>();
+      Response b = await api.getData('/api/driver/signup-options/brand/list?limit=200&offset=1');
+      if(b.statusCode == 200) {
+        signupBrands = VehicleBrandModel.fromJson(b.body).data ?? [];
+      }
+      Response c = await api.getData('/api/driver/signup-options/category/list?limit=100&offset=1');
+      if(c.statusCode == 200) {
+        signupCategories = CategoryModel.fromJson(c.body).data ?? [];
+      }
+    } catch (_) {}
+    signupOptionsLoading = false;
+    update();
+  }
+
+  void setSignupBrand(Brand? brand) {
+    signupBrand = brand;
+    signupModels = brand?.vehicleModels ?? [];
+    signupModel = null;
+    update();
+  }
+
+  void setSignupModel(VehicleModels? model) { signupModel = model; update(); }
+  void setSignupCategory(Category? category) { signupCategory = category; update(); }
+  void setSignupFuel(String fuel) { signupFuel = fuel; update(); }
+
+  Future<void> pickVehicleDoc() async {
+    final XFile? f = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if(f != null) { vehicleDocImages.add(f); update(); }
+  }
+
+  void removeVehicleDoc(int index) { vehicleDocImages.removeAt(index); update(); }
+
+  void clearSignupVehicle() {
+    signupBrand = null; signupModel = null; signupCategory = null; signupModels = [];
+    signupFuel = 'petrol';
+    vehicleDocImages.clear();
+    vehiclePlateController.clear();
+    vehicleExpireController.clear();
+  }
+
   void pickImage(bool isBack, bool isProfile) async {
        if(isProfile){
-        _pickedProfileFile = (await ImagePicker().pickImage(source: ImageSource.gallery))!;
+        final XFile? picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+        if(picked != null) { _pickedProfileFile = picked; }
       } else{
-         identityImage = (await ImagePicker().pickImage(source: ImageSource.gallery))!;
-         identityImages.add(identityImage);
-         multipartList.add(MultipartBody('identity_images[]', identityImage));
+         final XFile? picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+         if(picked != null) {
+           identityImage = picked;
+           identityImages.add(identityImage);
+           multipartList.add(MultipartBody('identity_images[]', identityImage));
+         }
       }
     update();
   }
@@ -209,7 +274,11 @@ class AuthController extends GetxController implements GetxService {
 
     _isLoading = true;
     update();
-    Response? response = await authServiceInterface.registration(signUpBody: signUpBody,profileImage: pickedProfileFile,identityImage: multipartList);
+    final List<MultipartBody> allFiles = [...multipartList];
+    for (final XFile f in vehicleDocImages) {
+      allFiles.add(MultipartBody('vehicle_documents[]', f));
+    }
+    Response? response = await authServiceInterface.registration(signUpBody: signUpBody,profileImage: pickedProfileFile,identityImage: allFiles);
     if(response!.statusCode == 200){
       fNameController.clear();
       lNameController.clear();
@@ -222,6 +291,7 @@ class AuthController extends GetxController implements GetxService {
       _pickedProfileFile = null;
       identityImages.clear();
       multipartList.clear();
+      clearSignupVehicle();
       referralCodeController.clear();
       _isLoading = false;
 

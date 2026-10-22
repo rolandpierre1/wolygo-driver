@@ -8,8 +8,9 @@ class SignUpAppbarWidget extends StatelessWidget {
   final String title;
   final String progressText;
   final bool enableBackButton;
+  final bool hideProgress;
 
-  const SignUpAppbarWidget({super.key,required this.title, required this.progressText, this.enableBackButton = false});
+  const SignUpAppbarWidget({super.key,required this.title, required this.progressText, this.enableBackButton = false, this.hideProgress = false});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class SignUpAppbarWidget extends StatelessWidget {
           Text(title.tr,style: textBold),
           ]),
 
-        CircularPercentIndicator(
+        hideProgress ? const SizedBox() : CircularPercentIndicator(
             radius: Get.height * 0.032,
             percent: progressText == '1_of_3' ? 0.33 : progressText == '2_of_3' ? 0.66 : 1,
             circularStrokeCap: CircularStrokeCap.round,

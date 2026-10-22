@@ -1,11 +1,14 @@
+import 'dart:io';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:ride_sharing_user_app/helper/email_checker.dart';
+import 'package:ride_sharing_user_app/common_widgets/image_widget.dart';
+import 'package:ride_sharing_user_app/features/auth/screens/vehicle_sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:ride_sharing_user_app/common_widgets/button_widget.dart';
 import 'package:ride_sharing_user_app/common_widgets/text_field_widget.dart';
 import 'package:ride_sharing_user_app/features/auth/controllers/auth_controller.dart';
-import 'package:ride_sharing_user_app/features/auth/screens/additional_sign_up_screen_2.dart';
 import 'package:ride_sharing_user_app/features/auth/widgets/signup_appbar_widget.dart';
 import 'package:ride_sharing_user_app/features/auth/widgets/text_field_title_widget.dart';
 import 'package:ride_sharing_user_app/features/splash/controllers/splash_controller.dart';
@@ -23,7 +26,7 @@ class AdditionalSignUpScreen1 extends StatelessWidget {
       body: SafeArea(
           child: GetBuilder<AuthController>(builder: (authController){
             return Column(children: [
-              const SignUpAppbarWidget(title: 'signup_as_a_driver', progressText: '2_of_3',enableBackButton: true),
+              const SignUpAppbarWidget(title: 'signup_as_a_driver', progressText: '1_of_3',enableBackButton: true),
 
               Expanded(child: SingleChildScrollView(
                   child: Column(children: [
@@ -35,6 +38,26 @@ class AdditionalSignUpScreen1 extends StatelessWidget {
                     Text('enter_your_information'.tr, style: textRegular.copyWith(
                       color: Theme.of(context).primaryColor.withOpacity(0.5),fontSize: Dimensions.fontSizeSmall,
                     )),
+                    const SizedBox(height: Dimensions.paddingSizeLarge),
+
+                    Container(height: 80, width: 80,
+                      decoration: BoxDecoration(shape: BoxShape.circle,
+                        border: Border.all(color: Theme.of(context).primaryColor, width: 1)),
+                      child: Stack(alignment: AlignmentDirectional.center, clipBehavior: Clip.none, children: [
+                        authController.pickedProfileFile == null ?
+                        ClipRRect(borderRadius: BorderRadius.circular(50),
+                          child: const ImageWidget(image: '', height: 76, width: 76, placeholder: Images.personPlaceholder)) :
+                        CircleAvatar(radius: 38, backgroundImage: FileImage(File(authController.pickedProfileFile!.path))),
+                        Positioned(right: 0, bottom: -3, child: InkWell(
+                          onTap: () => authController.pickImage(false, true),
+                          child: Container(
+                            decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle),
+                            padding: const EdgeInsets.all(5),
+                            child: const Icon(Icons.camera_enhance_rounded, color: Colors.white, size: 13),
+                          ),
+                        )),
+                      ]),
+                    ),
                     const SizedBox(height: Dimensions.paddingSizeLarge),
 
                     Padding(
@@ -75,13 +98,38 @@ class AdditionalSignUpScreen1 extends StatelessWidget {
                           countryDialCode: authController.countryDialCode,
                           controller: authController.phoneController,
                           focusNode: authController.phoneNode,
-                          nextFocus: authController.passwordNode,
+                          nextFocus: authController.emailNode,
                           inputAction: TextInputAction.next,
                           onCountryChanged: (CountryCode countryCode){
                             authController.countryDialCode = countryCode.dialCode!;
                             authController.setCountryCode(countryCode.dialCode!);
                             FocusScope.of(context).requestFocus(authController.phoneNode);
                           },
+                        ),
+
+                        TextFieldTitleWidget(title: '${'email'.tr}*'),
+
+                        TextFieldWidget(
+                          hintText: 'email'.tr,
+                          inputType: TextInputType.emailAddress,
+                          prefixIcon: Images.email,
+                          controller: authController.emailController,
+                          focusNode: authController.emailNode,
+                          nextFocus: authController.addressNode,
+                          inputAction: TextInputAction.next,
+                        ),
+
+                        TextFieldTitleWidget(title: '${'address'.tr}*'),
+
+                        TextFieldWidget(
+                          hintText: 'address'.tr,
+                          capitalization: TextCapitalization.words,
+                          inputType: TextInputType.text,
+                          prefixIcon: Images.location,
+                          controller: authController.addressController,
+                          focusNode: authController.addressNode,
+                          nextFocus: authController.passwordNode,
+                          inputAction: TextInputAction.next,
                         ),
 
                         TextFieldTitleWidget(title: '${'password'.tr}*'),
@@ -139,7 +187,12 @@ class AdditionalSignUpScreen1 extends StatelessWidget {
                         String password = authController.passwordController.text;
                         String confirmPassword = authController.confirmPasswordController.text;
 
-                        if(fName.isEmpty){
+                        String emailV = authController.emailController.text.trim();
+                        String addressV = authController.addressController.text.trim();
+
+                        if(authController.pickedProfileFile == null){
+                          showCustomSnackBar('profile_image_is_required'.tr);
+                        }else if(fName.isEmpty){
                           showCustomSnackBar('first_name_is_required'.tr);
                           FocusScope.of(context).requestFocus(authController.fNameNode);
                         }else if(lName.isEmpty){
@@ -151,6 +204,15 @@ class AdditionalSignUpScreen1 extends StatelessWidget {
                         }else if(!PhoneNumber.parse(authController.countryDialCode + phone).isValid(type: PhoneNumberType.mobile)){
                           showCustomSnackBar('phone_number_is_not_valid'.tr);
                           FocusScope.of(context).requestFocus(authController.phoneNode);
+                        }else if(emailV.isEmpty){
+                          showCustomSnackBar('email_is_required'.tr);
+                          FocusScope.of(context).requestFocus(authController.emailNode);
+                        }else if(EmailChecker.isNotValid(emailV)){
+                          showCustomSnackBar('enter_valid_email_address'.tr);
+                          FocusScope.of(context).requestFocus(authController.emailNode);
+                        }else if(addressV.isEmpty){
+                          showCustomSnackBar('address_is_required'.tr);
+                          FocusScope.of(context).requestFocus(authController.addressNode);
                         }else if(password.isEmpty){
                           showCustomSnackBar('password_is_required'.tr);
                           FocusScope.of(context).requestFocus(authController.passwordNode);
@@ -164,7 +226,7 @@ class AdditionalSignUpScreen1 extends StatelessWidget {
                           showCustomSnackBar('password_is_mismatch'.tr);
                           FocusScope.of(context).requestFocus(authController.confirmPasswordNode);
                         }else{
-                          Get.to(()=> const AdditionalSignUpScreen2());
+                          Get.to(()=> const VehicleSignUpScreen());
 
                         }
 

@@ -14,6 +14,7 @@ class SignUpBody {
   String? referralCode;
   List<String>? services;
   String? fcmToken;
+  Map<String, String>? extra;
 
   SignUpBody({this.fName,
     this.lName,
@@ -27,7 +28,8 @@ class SignUpBody {
     this.deviceToken,
     this.services,
     this.referralCode,
-    this.fcmToken
+    this.fcmToken,
+    this.extra
   });
 
   SignUpBody.fromJson(Map<String, dynamic> json) {
@@ -60,6 +62,7 @@ class SignUpBody {
     data['service'] = jsonEncode(services);
     data['referral_code'] = referralCode ?? '';
     data['fcm_token'] = fcmToken ?? '';
+    if(extra != null) { data.addAll(extra!); }
     return data;
   }
 }

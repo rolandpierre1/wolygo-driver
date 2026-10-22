@@ -44,72 +44,6 @@ class AdditionalSignUpScreen2 extends StatelessWidget {
                         ),
                         const SizedBox(height: Dimensions.paddingSizeLarge),
         
-                        Padding(
-                          padding: const EdgeInsets.only(top: Dimensions.paddingSizeSmall),
-                          child: Container(height: 80, width: Get.width,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                            ),
-                            child: Center(child: Stack(
-                              alignment: AlignmentDirectional.center, clipBehavior: Clip.none,
-                              children: [
-                                authController.pickedProfileFile == null ?
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: const ImageWidget(
-                                    image: '', height: 76, width: 76,
-                                    placeholder: Images.personPlaceholder,
-                                  ),
-                                ) :
-                                CircleAvatar(
-                                  radius: 40,
-                                  backgroundImage:FileImage(File(authController.pickedProfileFile!.path)),
-                                ),
-        
-                                Positioned(right: 5, bottom: -3,
-                                    child: InkWell(
-                                      onTap: () =>  authController.pickImage(false, true),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColor, shape: BoxShape.circle,
-                                        ),
-                                        padding: const EdgeInsets.all(5),
-                                        child: const Icon(Icons.camera_enhance_rounded, color: Colors.white,size: 13),
-                                      ),
-                                    )
-                                ),
-                              ],
-                            ),
-                            ),
-                          ),
-                        ),
-        
-                        TextFieldTitleWidget(title: '${'email'.tr}*'),
-        
-                        TextFieldWidget(
-                          hintText: 'email'.tr,
-                          inputType: TextInputType.emailAddress,
-                          prefixIcon: Images.email,
-                          controller: authController.emailController,
-                          focusNode: authController.emailNode,
-                          nextFocus: authController.addressNode,
-                          inputAction: TextInputAction.next,
-                        ),
-        
-                        TextFieldTitleWidget(title: '${'address'.tr}*'),
-        
-                        TextFieldWidget(
-                          hintText: 'address'.tr,
-                          capitalization: TextCapitalization.words,
-                          inputType: TextInputType.text,
-                          prefixIcon: Images.location,
-                          controller: authController.addressController,
-                          focusNode: authController.addressNode,
-                          nextFocus: authController.identityNumberNode,
-                          inputAction: TextInputAction.next,
-                        ),
-        
                         TextFieldTitleWidget(title: '${'identity_type'.tr}*'),
         
                         Container(
@@ -238,25 +172,39 @@ class AdditionalSignUpScreen2 extends StatelessWidget {
                           ),
                         ),
         
+                        TextFieldTitleWidget(title: (Get.locale?.languageCode ?? 'fr') == 'fr'
+                            ? 'Documents du véhicule (permis, immatriculation, assurance)'
+                            : 'Vehicle documents (licence, registration, insurance)'),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
+                          child: Wrap(spacing: 8, runSpacing: 8, children: [
+                            for (int i = 0; i < authController.vehicleDocImages.length; i++)
+                              Stack(children: [
+                                ClipRRect(borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(File(authController.vehicleDocImages[i].path), width: 80, height: 80, fit: BoxFit.cover)),
+                                Positioned(top: 0, right: 0, child: InkWell(
+                                  onTap: () => authController.removeVehicleDoc(i),
+                                  child: Container(color: Colors.white,
+                                    child: const Icon(Icons.delete_forever_rounded, color: Colors.red, size: 18)))),
+                              ]),
+                            InkWell(
+                              onTap: () => authController.pickVehicleDoc(),
+                              child: Container(width: 80, height: 80,
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Theme.of(context).hintColor)),
+                                child: Icon(Icons.add_a_photo_outlined, color: Theme.of(context).hintColor)),
+                            ),
+                          ]),
+                        ),
+
                         authController.isLoading ?
                         Center(child: SpinKitCircle(color: Theme.of(context).primaryColor, size: 40.0)) :
                         ButtonWidget(buttonText: 'submit'.tr,
                             onPressed: () async {
-                              String email = authController.emailController.text;
-                              String address = authController.addressController.text;
+                              String email = authController.emailController.text.trim();
+                              String address = authController.addressController.text.trim();
                               String identityNumber = authController.identityNumberController.text;
-                              if(authController.pickedProfileFile == null){
-                                showCustomSnackBar('profile_image_is_required'.tr);
-                              }else if(email.isEmpty){
-                                showCustomSnackBar('email_is_required'.tr);
-                                FocusScope.of(context).requestFocus(authController.emailNode);
-                              }else if (EmailChecker.isNotValid(email)) {
-                                showCustomSnackBar('enter_valid_email_address'.tr);
-                                FocusScope.of(context).requestFocus(authController.emailNode);
-                              }else if(address.isEmpty){
-                                showCustomSnackBar('address_is_required'.tr);
-                                FocusScope.of(context).requestFocus(authController.addressNode);
-                              }else if(identityNumber.isEmpty){
+                              if(identityNumber.isEmpty){
                                 showCustomSnackBar('identity_number_is_required'.tr);
                                 FocusScope.of(context).requestFocus(authController.identityNumberNode);
                               }else if(authController.identityImages.isEmpty){
@@ -291,7 +239,15 @@ class AdditionalSignUpScreen2 extends StatelessWidget {
                                     deviceToken: authController.getDeviceToken(),
                                     services: services,
                                     referralCode: authController.referralCodeController.text.trim(),
-                                    fcmToken: deviceToken
+                                    fcmToken: deviceToken,
+                                    extra: {
+                                      'vehicle_brand_id': authController.signupBrand?.id ?? '',
+                                      'vehicle_model_id': authController.signupModel?.id ?? '',
+                                      'vehicle_category_id': authController.signupCategory?.id ?? '',
+                                      'vehicle_plate': authController.vehiclePlateController.text.trim(),
+                                      'vehicle_licence_expire_date': authController.vehicleExpireController.text,
+                                      'vehicle_fuel_type': authController.signupFuel,
+                                    },
                                 );
                                 authController.register(authController.countryDialCode, signUpBody);
                               }
