@@ -136,6 +136,21 @@ class _VehicleSignUpScreenState extends State<VehicleSignUpScreen> {
                     label: (f) => f.tr, onChanged: (v) { if (v != null) c.setSignupFuel(v); }),
 
                   const SizedBox(height: Dimensions.paddingSizeLarge),
+                  TextFieldTitleWidget(title: '${_t('Types de services proposés', 'Services offered')}*'),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero, controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(_t('Passager', 'Passenger')),
+                    value: c.isRideShare,
+                    onChanged: (_) => c.updateServiceType(true),
+                  ),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero, controlAffinity: ListTileControlAffinity.leading,
+                    title: Text(_t('Livraison de Colis', 'Parcel delivery')),
+                    value: c.isParcelShare,
+                    onChanged: (_) => c.updateServiceType(false),
+                  ),
+
+                  const SizedBox(height: Dimensions.paddingSizeLarge),
                   ButtonWidget(
                     buttonText: 'next'.tr, radius: 50,
                     onPressed: () {
@@ -145,6 +160,8 @@ class _VehicleSignUpScreenState extends State<VehicleSignUpScreen> {
                         showCustomSnackBar('vehicle_model_is_required'.tr);
                       } else if (c.signupCategory == null) {
                         showCustomSnackBar(_t('Le type de véhicule est requis', 'Vehicle type is required'));
+                      } else if (!c.isRideShare && !c.isParcelShare) {
+                        showCustomSnackBar(_t('Choisissez au moins un type de service', 'Select at least one service'));
                       } else if (c.vehiclePlateController.text.trim().isEmpty) {
                         showCustomSnackBar('licence_plate_number_is_required'.tr);
                       } else if (c.vehicleExpireController.text.isEmpty) {
