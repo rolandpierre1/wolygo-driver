@@ -5,7 +5,7 @@ import 'package:ride_sharing_user_app/features/html/domain/html_enum_types.dart'
 import 'package:ride_sharing_user_app/features/profile/controllers/profile_controller.dart';
 import 'package:ride_sharing_user_app/features/refer_and_earn/screens/refer_and_earn_screen.dart';
 import 'package:ride_sharing_user_app/features/ride/controllers/ride_controller.dart';
-import 'package:ride_sharing_user_app/features/wallet/screens/payment_info_screen.dart';
+import 'package:ride_sharing_user_app/features/wallet/screens/wolygo_wallet_screen.dart';
 import 'package:ride_sharing_user_app/util/dimensions.dart';
 import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/util/styles.dart';
@@ -64,8 +64,8 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
             onTap: ()=> Get.to(()=> const ReferAndEarnScreen()),
           ),
 
-          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'add_withdraw_info',
-            onTap: ()=> Get.to(()=> const PaymentInfoScreen()),
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Portefeuille et retraits',
+            onTap: ()=> Get.to(()=> const WolygoWalletScreen()),
           ),
 
           ProfileMenuItem(icon: Images.helpAndSupportIcon, title: 'help_and_support',
