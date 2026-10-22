@@ -21,6 +21,7 @@ class SignUpScreen extends StatelessWidget {
         body: GetBuilder<AuthController>(builder:(authController){
           return Column(children: [
             const SignUpAppbarWidget(title: 'signup_as_a_driver', progressText: '1_of_3'),
+            Expanded(child: SingleChildScrollView(child: Column(children: [
             const SizedBox(height: Dimensions.paddingSizeSignUp),
 
             ClipRRect(
@@ -105,7 +106,8 @@ class SignUpScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const Spacer(),
+            const SizedBox(height: Dimensions.paddingSizeDefault),
+            ]))),
 
             ButtonWidget(
               margin: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
