@@ -12,7 +12,7 @@ class ReferralEarnBottomsheetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Get.height * 0.4,
+      constraints: BoxConstraints(maxHeight: Get.height * 0.92),
       padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
       decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
@@ -21,7 +21,7 @@ class ReferralEarnBottomsheetWidget extends StatelessWidget {
             topLeft: Radius.circular(Dimensions.paddingSizeLarge),
           )
       ),
-      child: Column(children: [
+      child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
         InkWell(
           onTap: ()=> Get.back(),
           child: Align(alignment: Alignment.topRight,
@@ -146,7 +146,7 @@ class ReferralEarnBottomsheetWidget extends StatelessWidget {
 
           ]),
         ),
-      ]),
+      ])),
     );
   }
 }

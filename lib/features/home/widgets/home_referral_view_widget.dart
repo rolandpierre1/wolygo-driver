@@ -67,7 +67,7 @@ class ReferralViewBottomSheetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Get.height * 0.5,
+      constraints: BoxConstraints(maxHeight: Get.height * 0.92),
       padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
       decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
@@ -76,7 +76,7 @@ class ReferralViewBottomSheetWidget extends StatelessWidget {
             topLeft: Radius.circular(Dimensions.paddingSizeLarge),
           )
       ),
-      child: Column(children: [
+      child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
         InkWell(
           onTap: ()=> Get.back(),
           child: Align(alignment: Alignment.topRight,
@@ -154,7 +154,7 @@ class ReferralViewBottomSheetWidget extends StatelessWidget {
             buttonText: 'invite_friends'.tr
         ),
         const SizedBox(height: Dimensions.paddingSizeLarge),
-      ]),
+      ])),
     );
   }
 }
