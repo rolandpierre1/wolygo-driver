@@ -91,6 +91,15 @@ class _WolygoWalletScreenState extends State<WolygoWalletScreen> with WidgetsBin
 
   bool get _ready => _data?['stripe']?['payouts_enabled'] == true;
   bool get _started => _data?['stripe']?['connected'] == true;
+  List<Map<String, dynamic>> get _accounts =>
+      ((_data?['payout_accounts'] as List?) ?? []).map((e) => Map<String, dynamic>.from(e)).toList();
+  Map<String, dynamic>? _accountFor(String method) {
+    final want = method == 'instant' ? 'card' : 'bank';
+    for (final a in _accounts) {
+      if (a['type'] == want) return a;
+    }
+    return null;
+  }
 
   Future<void> _refreshStripeThenLoad() async {
     await _api.postData('/api/driver/wallet/stripe/refresh', {});
@@ -248,7 +257,16 @@ class _WolygoWalletScreenState extends State<WolygoWalletScreen> with WidgetsBin
             child: Row(children: [
               const Icon(Icons.verified, color: Colors.green),
               const SizedBox(width: 10),
-              const Expanded(child: Text('Compte bancaire enregistré via Stripe', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Compte enregistré via Stripe', style: TextStyle(fontWeight: FontWeight.w600)),
+                if (_accounts.isEmpty)
+                  const Text('Compte bancaire enregistré', style: TextStyle(fontSize: 13, color: Colors.black54)),
+                ..._accounts.map((a) => Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text('${a['label']}${a['name'] != null && '${a['name']}'.isNotEmpty ? ' · ${a['name']}' : ''}',
+                          style: const TextStyle(fontSize: 13, color: Colors.black54)),
+                    )),
+              ])),
               TextButton(onPressed: _busy ? null : () => _openStripe(manage: true), child: const Text('Modifier')),
             ]),
           ),
@@ -299,10 +317,41 @@ class _WolygoWalletScreenState extends State<WolygoWalletScreen> with WidgetsBin
     final fee = _num(sel['fee']);
     final net = amount - fee;
     final balance = _num(_data?['balance']);
+    final acct = _accountFor(_method);
+    if (_accounts.isNotEmpty && acct == null) {
+      final isInstant = _method == 'instant';
+      return [
+        const SizedBox(height: 14),
+        const Divider(height: 1),
+        const SizedBox(height: 14),
+        Text(
+          isInstant
+              ? 'Pour le versement instantané, ajoute ta carte de débit (numéro de carte, expiration et code de sécurité).'
+              : 'Pour ce versement, ajoute ton compte bancaire (numéro d\'institution, numéro de transit et numéro de compte).',
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _ink, foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            ),
+            onPressed: _busy ? null : () => _openStripe(manage: true),
+            icon: const Icon(Icons.add),
+            label: Text(isInstant ? 'Ajouter une carte de débit' : 'Ajouter un compte bancaire', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          ),
+        ),
+      ];
+    }
     return [
       const SizedBox(height: 14),
       const Divider(height: 1),
       const SizedBox(height: 14),
+      if (acct != null) Text('Versé sur: ${acct['label']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+      if (acct != null) const SizedBox(height: 4),
       Text('Minimum ${_money(min)} · solde disponible ${_money(balance)}', style: const TextStyle(fontSize: 13, color: Colors.black54)),
       const SizedBox(height: 10),
       TextField(
