@@ -155,3 +155,22 @@ class SxDoc extends StatelessWidget {
     );
   }
 }
+
+/// Bouton « Précédent » bien visible.
+class SxBackButton extends StatelessWidget {
+  const SxBackButton({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).primaryColor;
+    return OutlinedButton(
+      onPressed: () => Get.back(),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: c,
+        side: BorderSide(color: c, width: 1.5),
+        minimumSize: const Size.fromHeight(50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      ),
+      child: Text(sxT('Précédent', 'Previous'), style: textBold.copyWith(color: c)),
+    );
+  }
+}

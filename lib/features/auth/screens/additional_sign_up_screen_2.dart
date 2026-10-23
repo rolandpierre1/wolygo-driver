@@ -67,7 +67,7 @@ class AdditionalSignUpScreen2 extends StatelessWidget {
                 c.isLoading
                   ? Center(child: SpinKitCircle(color: Theme.of(context).primaryColor, size: 40.0))
                   : Row(children: [
-                      Expanded(child: OutlinedButton(onPressed: () => Get.back(), child: Text(sxT('Précédent', 'Previous')))),
+                      const Expanded(child: SxBackButton()),
                       const SizedBox(width: 12),
                       Expanded(child: ButtonWidget(
                         buttonText: sxT('Soumettre l\'inscription', 'Submit'), radius: 50,

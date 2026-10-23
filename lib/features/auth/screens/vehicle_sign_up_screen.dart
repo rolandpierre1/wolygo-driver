@@ -94,7 +94,7 @@ class _VehicleSignUpScreenState extends State<VehicleSignUpScreen> {
 
                 const SizedBox(height: Dimensions.paddingSizeExtraLarge),
                 Row(children: [
-                  Expanded(child: OutlinedButton(onPressed: () => Get.back(), child: Text(sxT('Précédent', 'Previous')))),
+                  const Expanded(child: SxBackButton()),
                   const SizedBox(width: 12),
                   Expanded(child: ButtonWidget(
                     buttonText: 'next'.tr, radius: 50,
