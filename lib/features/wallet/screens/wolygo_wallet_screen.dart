@@ -173,7 +173,6 @@ class _WolygoWalletScreenState extends State<WolygoWalletScreen> with WidgetsBin
                       _balanceCard(),
                       const SizedBox(height: 18),
                       _methodsCard(),
-                      if (_ready) ...[const SizedBox(height: 18), _payoutCard()],
                       const SizedBox(height: 18),
                       _payoutsList(),
                       const SizedBox(height: 18),
@@ -281,6 +280,7 @@ class _WolygoWalletScreenState extends State<WolygoWalletScreen> with WidgetsBin
                     const SizedBox(width: 6),
                     const Padding(padding: EdgeInsets.only(bottom: 3), child: Text('/ virement', style: TextStyle(fontSize: 15, color: Colors.black54))),
                   ]),
+                  if (active && _ready) ..._payoutInline(),
                 ]),
                 if (active) const Positioned(right: 0, top: 0, child: Icon(Icons.check, color: _ink)),
               ]),
@@ -292,48 +292,53 @@ class _WolygoWalletScreenState extends State<WolygoWalletScreen> with WidgetsBin
     );
   }
 
-  Widget _payoutCard() {
+  List<Widget> _payoutInline() {
     final min = _num(_data?['settings']?['min_payout']);
     final amount = double.tryParse(_amountController.text.replaceAll(',', '.')) ?? 0;
     final sel = _enabledMethods().firstWhere((m) => m['method'] == _method, orElse: () => <String, dynamic>{});
     final fee = _num(sel['fee']);
     final net = amount - fee;
-    return _box(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('Retirer vers mon compte bancaire', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: _ink)),
-        const SizedBox(height: 4),
-        Text('Minimum ${_money(min)} · méthode: ${_methodLabel(_method)}', style: const TextStyle(fontSize: 13, color: Colors.black54)),
-        const SizedBox(height: 14),
-        TextField(
-          controller: _amountController,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(
-            labelText: 'Montant à retirer', suffixText: '\$',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-          ),
-          onChanged: (_) => setState(() {}),
+    final balance = _num(_data?['balance']);
+    return [
+      const SizedBox(height: 14),
+      const Divider(height: 1),
+      const SizedBox(height: 14),
+      Text('Minimum ${_money(min)} · solde disponible ${_money(balance)}', style: const TextStyle(fontSize: 13, color: Colors.black54)),
+      const SizedBox(height: 10),
+      TextField(
+        controller: _amountController,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        decoration: InputDecoration(
+          labelText: 'Montant à retirer', suffixText: '\$',
+          filled: true, fillColor: Colors.white,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
         ),
-        const SizedBox(height: 10),
-        Text(net > 0 ? 'Tu recevras ${_money(net)} (frais ${_money(fee)}).' : 'Le montant doit couvrir les frais (${_money(fee)}).',
-            style: const TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 14),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _ink, foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-            ),
-            onPressed: (_busy || net <= 0 || amount < min) ? null : _requestPayout,
-            icon: _busy
-                ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : const Icon(Icons.arrow_downward),
-            label: const Text('Retirer', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        onChanged: (_) => setState(() {}),
+      ),
+      const SizedBox(height: 10),
+      Text(amount <= 0
+              ? 'Entre le montant que tu veux retirer.'
+              : (net > 0 ? 'Tu recevras ${_money(net)} (frais ${_money(fee)}).' : 'Le montant doit couvrir les frais (${_money(fee)}).'),
+          style: const TextStyle(fontWeight: FontWeight.w600)),
+      const SizedBox(height: 14),
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _ink, foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           ),
+          onPressed: (_busy || net <= 0 || amount < min || amount > balance) ? null : _requestPayout,
+          icon: _busy
+              ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+              : const Icon(Icons.arrow_downward),
+          label: Text(amount > 0 ? 'Retirer ${_money(amount)}' : 'Retirer', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         ),
-      ]),
-    );
+      ),
+      if (amount > balance && amount > 0)
+        const Padding(padding: EdgeInsets.only(top: 8), child: Text('Le montant dépasse ton solde disponible.', style: TextStyle(color: Colors.red, fontSize: 13))),
+    ];
   }
 
   Widget _payoutsList() {
