@@ -1,264 +1,142 @@
-import 'dart:io';
-import 'package:dotted_border/dotted_border.dart';
+import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:ride_sharing_user_app/features/auth/widgets/signup_appbar_widget.dart';
-import 'package:ride_sharing_user_app/helper/display_helper.dart';
-import 'package:ride_sharing_user_app/helper/email_checker.dart';
-import 'package:ride_sharing_user_app/util/dimensions.dart';
-import 'package:ride_sharing_user_app/util/images.dart';
-import 'package:ride_sharing_user_app/util/styles.dart';
+import 'package:ride_sharing_user_app/common_widgets/button_widget.dart';
 import 'package:ride_sharing_user_app/features/auth/controllers/auth_controller.dart';
 import 'package:ride_sharing_user_app/features/auth/domain/models/signup_body.dart';
-import 'package:ride_sharing_user_app/features/auth/widgets/text_field_title_widget.dart';
-import 'package:ride_sharing_user_app/common_widgets/button_widget.dart';
-import 'package:ride_sharing_user_app/common_widgets/image_widget.dart';
-import 'package:ride_sharing_user_app/common_widgets/text_field_widget.dart';
+import 'package:ride_sharing_user_app/features/auth/widgets/signup_appbar_widget.dart';
+import 'package:ride_sharing_user_app/features/auth/widgets/signup_fields.dart';
+import 'package:ride_sharing_user_app/helper/display_helper.dart';
+import 'package:ride_sharing_user_app/util/dimensions.dart';
+import 'package:ride_sharing_user_app/util/styles.dart';
 
+/// Étape 3/3 : Téléchargement des documents (comme Crisyo).
 class AdditionalSignUpScreen2 extends StatelessWidget {
+  const AdditionalSignUpScreen2({super.key});
 
-  const AdditionalSignUpScreen2({super.key,});
+  String? _missing(AuthController c) {
+    if (c.sdocs['license_front'] == null) return sxT('Permis de conduire — recto requis', 'Licence front required');
+    if (c.sdocs['license_back'] == null) return sxT('Permis de conduire — verso requis', 'Licence back required');
+    if (c.sdocs['registration'] == null) return sxT('Le certificat d\'immatriculation est requis', 'Registration certificate required');
+    if (c.sc('registration_exp').text.isEmpty) return sxT('L\'expiration de l\'immatriculation est requise', 'Registration expiry required');
+    if (c.sdocs['insurance'] == null) return sxT('Le certificat d\'assurance est requis', 'Insurance certificate required');
+    if (c.sc('insurance_exp').text.isEmpty) return sxT('L\'expiration de l\'assurance est requise', 'Insurance expiry required');
+    if (c.sdocs['taxi_training'] == null) return sxT('Le certificat de formation de taxi est requis', 'Taxi training certificate required');
+    if (c.sdocs['criminal_record'] == null) return sxT('L\'antécédent judiciaire est requis', 'Criminal record check required');
+    if (c.sc('criminal_exp').text.isEmpty) return sxT('L\'expiration de l\'antécédent judiciaire est requise', 'Criminal record expiry required');
+    final km = int.tryParse(c.sc('v_km').text.trim()) ?? 0;
+    if (km > 70000 && c.sdocs['inspection'] == null) return sxT('L\'inspection du véhicule est requise (plus de 70 000 km)', 'Vehicle inspection required (over 70,000 km)');
+    if (c.sc('tps').text.trim().isEmpty) return sxT('Le n° TPS est requis', 'GST number required');
+    if (c.sc('tvq').text.trim().isEmpty) return sxT('Le n° TVQ est requis', 'QST number required');
+    return null;
+  }
+
+  Widget _doc(AuthController c, String label, String key, {String? expiryKey}) {
+    return SxDoc(label,
+      file: c.sdocs[key], onPick: () => c.pickSdoc(key), onRemove: () => c.removeSdoc(key),
+      expiry: expiryKey == null ? null : SxDate(sxT('Date d\'expiration', 'Expiry date'), c.sc(expiryKey), future: true, onChanged: c.update));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: GetBuilder<AuthController>(builder: (authController){
+        child: GetBuilder<AuthController>(builder: (c) {
           return Column(children: [
-            SignUpAppbarWidget(title: 'signup_as_a_driver', progressText: '3_of_3',enableBackButton: true),
-            
-            Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(child: Text('provide_your_identity'.tr,style: textBold.copyWith(color: Theme.of(context).primaryColor,fontSize: 22))),
+            const SignUpAppbarWidget(title: 'signup_as_a_driver', progressText: '3_of_3', enableBackButton: true),
+            Expanded(child: SingleChildScrollView(
+              padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(sxT('Téléchargement des documents', 'Upload your documents'),
+                  style: textBold.copyWith(color: Theme.of(context).primaryColor, fontSize: 22)),
 
-                        Center(
-                          child: Text('this_information_will_help'.tr, style: textRegular.copyWith(
-                            color: Theme.of(context).primaryColor.withOpacity(0.5),fontSize: Dimensions.fontSizeSmall,
-                          )),
-                        ),
-                        const SizedBox(height: Dimensions.paddingSizeLarge),
-        
-                        TextFieldTitleWidget(title: '${'identity_type'.tr}*'),
-        
-                        Container(
-                          height: 50,
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).cardColor,
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(width: .5, color: Theme.of(context).hintColor.withOpacity(.7)),
-                          ),
-                          child: DropdownButton<String>(
-                            hint: authController.identityType == '' ?
-                            Text('select_identity_type'.tr,style: textRegular.copyWith(color: Theme.of(context).textTheme.bodyMedium!.color)) :
-                            Text(
-                              authController.identityType.tr,
-                              style: textRegular.copyWith(color: Theme.of(context).textTheme.bodyMedium!.color),
-                            ),
-                            items: authController.identityTypeList.map((String value) {
-                              return DropdownMenuItem<String>(value: value, child: Text(value.tr,style: textRegular.copyWith(color: Theme.of(context).textTheme.bodyMedium!.color)));
-                            }).toList(),
-                            onChanged: (val) {
-                              authController.setIdentityType(val!);
-                            },
-                            isExpanded: true,
-                            underline: const SizedBox(),
-                          ),
-                        ),
-        
-                        TextFieldTitleWidget(title: '${'identification_number'.tr}*'),
-        
-                        TextFieldWidget(
-                          hintText: 'Ex: 12345',
-                          inputType: TextInputType.text,
-                          prefixIcon: Images.identity,
-                          controller: authController.identityNumberController,
-                          focusNode: authController.identityNumberNode,
-                          inputAction: TextInputAction.done,
-                        ),
-        
-                        TextFieldTitleWidget(title: '${'identity_image'.tr}*'),
-        
-                        Padding(
-                          padding:  const EdgeInsets.fromLTRB(
-                            Dimensions.paddingSizeDefault, 0, Dimensions.paddingSizeDefault,
-                            Dimensions.paddingSizeDefault,
-                          ),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount : authController.identityImages.length >= 2 ?
-                            2:
-                            authController.identityImages.length + 1,
-                            itemBuilder: (BuildContext context, index){
-                              return index ==  authController.identityImages.length ?
-                              GestureDetector(
-                                onTap: ()=> authController.pickImage(false, false),
-                                child: DottedBorder(
-                                  strokeWidth: 2,
-                                  dashPattern: const [10,5],
-                                  color: Theme.of(context).hintColor,
-                                  borderType: BorderType.RRect,
-                                  radius: const Radius.circular(Dimensions.paddingSizeSmall),
-                                  child: Stack(children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(Dimensions.paddingSizeSmall),
-                                      child:  SizedBox(
-                                        height: MediaQuery.of(context).size.width/4.3,
-                                        width: MediaQuery.of(context).size.width,
-                                        child: Image.asset(Images.cameraPlaceholder, scale: 3),
-                                      ),
-                                    ),
-        
-                                    Positioned(
-                                      bottom: 0, right: 0, top: 0, left: 0,
-                                      child: Container(decoration: BoxDecoration(
-                                        color: Theme.of(context).hintColor.withOpacity(0.07),
-                                        borderRadius: BorderRadius.circular(Dimensions.paddingSizeSmall),
-                                      )),
-                                    ),
-                                  ]),
-                                ),
-                              ) :
-                              Stack(children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(Dimensions.paddingSizeExtraSmall),
-                                      ),
-                                      child:  Image.file(
-                                        File(authController.identityImages[index].path),
-                                        width: MediaQuery.of(context).size.width,
-                                        height: MediaQuery.of(context).size.width/4.3,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-        
-                                Positioned(
-                                  top:0,right:0,
-                                  child: InkWell(
-                                    onTap :() => authController.removeImage(index),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(Radius.circular(
-                                          Dimensions.paddingSizeDefault,
-                                        )),
-                                      ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(4.0),
-                                        child: Icon(Icons.delete_forever_rounded,color: Colors.red,size: 15),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ]);
-        
-                            },
-                          ),
-                        ),
-        
-                        TextFieldTitleWidget(title: (Get.locale?.languageCode ?? 'fr') == 'fr'
-                            ? 'Documents du véhicule (permis, immatriculation, assurance)'
-                            : 'Vehicle documents (licence, registration, insurance)'),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
-                          child: Wrap(spacing: 8, runSpacing: 8, children: [
-                            for (int i = 0; i < authController.vehicleDocImages.length; i++)
-                              Stack(children: [
-                                ClipRRect(borderRadius: BorderRadius.circular(8),
-                                  child: Image.file(File(authController.vehicleDocImages[i].path), width: 80, height: 80, fit: BoxFit.cover)),
-                                Positioned(top: 0, right: 0, child: InkWell(
-                                  onTap: () => authController.removeVehicleDoc(i),
-                                  child: Container(color: Colors.white,
-                                    child: const Icon(Icons.delete_forever_rounded, color: Colors.red, size: 18)))),
-                              ]),
-                            InkWell(
-                              onTap: () => authController.pickVehicleDoc(),
-                              child: Container(width: 80, height: 80,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Theme.of(context).hintColor)),
-                                child: Icon(Icons.add_a_photo_outlined, color: Theme.of(context).hintColor)),
-                            ),
-                          ]),
-                        ),
+                _doc(c, sxT('Permis de conduire — recto', 'Driver licence — front'), 'license_front'),
+                _doc(c, sxT('Permis de conduire — verso', 'Driver licence — back'), 'license_back'),
+                _doc(c, sxT('Certificat d\'immatriculation', 'Registration certificate'), 'registration', expiryKey: 'registration_exp'),
+                _doc(c, sxT('Certificat d\'assurance', 'Insurance certificate'), 'insurance', expiryKey: 'insurance_exp'),
+                _doc(c, sxT('Certificat de formation de taxi', 'Taxi training certificate'), 'taxi_training'),
+                _doc(c, sxT('Antécédent judiciaire (renouvelable chaque année)', 'Criminal record check (renewed yearly)'), 'criminal_record', expiryKey: 'criminal_exp'),
+                _doc(c, sxT('Inspection du véhicule (si plus de 70 000 km)', 'Vehicle inspection (if over 70,000 km)'), 'inspection'),
 
-                        authController.isLoading ?
-                        Center(child: SpinKitCircle(color: Theme.of(context).primaryColor, size: 40.0)) :
-                        ButtonWidget(buttonText: 'submit'.tr,
-                            onPressed: () async {
-                              String email = authController.emailController.text.trim();
-                              String address = authController.addressController.text.trim();
-                              String identityNumber = authController.identityNumberController.text;
-                              if(identityNumber.isEmpty){
-                                showCustomSnackBar('identity_number_is_required'.tr);
-                                FocusScope.of(context).requestFocus(authController.identityNumberNode);
-                              }else if(authController.identityImages.isEmpty){
-                                showCustomSnackBar('identity_image_is_required'.tr);
-                              }else if(authController.identityType.isEmpty){
-                                showCustomSnackBar('identity_type_is_required'.tr);
-                              }
-                              else{
-                                List<String> services = [];
-                                if(authController.isRideShare){
-                                  services.add('ride_request');
-                                }
-                                if(authController.isParcelShare){
-                                  services.add('parcel');
-                                }
-                                String? deviceToken;
-                                try {
-                                  deviceToken = await FirebaseMessaging.instance.getToken().timeout(const Duration(seconds: 5));
-                                } catch (_) {
-                                  deviceToken = null;
-                                }
-                                SignUpBody signUpBody = SignUpBody(
-                                    email: email,
-                                    address: address,
-                                    identityNumber: identityNumber,
-                                    identificationType: authController.identityType,
-                                    fName: authController.fNameController.text,
-                                    lName: authController.lNameController.text,
-                                    phone: authController.countryDialCode+authController.phoneController.text,
-                                    password: authController.passwordController.text,
-                                    confirmPassword: authController.confirmPasswordController.text,
-                                    deviceToken: authController.getDeviceToken(),
-                                    services: services,
-                                    referralCode: authController.referralCodeController.text.trim(),
-                                    fcmToken: deviceToken,
-                                    extra: {
-                                      'vehicle_brand_id': authController.signupBrand?.id ?? '',
-                                      'vehicle_model_id': authController.signupModel?.id ?? '',
-                                      'vehicle_category_id': authController.signupCategory?.id ?? '',
-                                      'vehicle_plate': authController.vehiclePlateController.text.trim(),
-                                      'vehicle_licence_expire_date': authController.vehicleExpireController.text,
-                                      'vehicle_fuel_type': authController.signupFuel,
-                                    },
-                                );
-                                authController.register(authController.countryDialCode, signUpBody);
-                              }
-                            }, radius: 50),
-        
-                        const SizedBox(height: Dimensions.paddingSizeDefault,),
-                      ],
-                    ),
-                  ),
-                )
-            )
+                SxField(sxT('N° TPS', 'GST number'), c.sc('tps')),
+                SxField(sxT('N° TVQ', 'QST number'), c.sc('tvq')),
+
+                const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                c.isLoading
+                  ? Center(child: SpinKitCircle(color: Theme.of(context).primaryColor, size: 40.0))
+                  : Row(children: [
+                      Expanded(child: OutlinedButton(onPressed: () => Get.back(), child: Text(sxT('Précédent', 'Previous')))),
+                      const SizedBox(width: 12),
+                      Expanded(child: ButtonWidget(
+                        buttonText: sxT('Soumettre l\'inscription', 'Submit'), radius: 50,
+                        onPressed: () async {
+                          final m = _missing(c);
+                          if (m != null) { showCustomSnackBar(m); return; }
+
+                          final services = <String>[];
+                          if (c.isRideShare) services.add('ride_request');
+                          if (c.isParcelShare) services.add('parcel');
+
+                          String? deviceToken;
+                          try {
+                            deviceToken = await FirebaseMessaging.instance.getToken().timeout(const Duration(seconds: 5));
+                          } catch (_) { deviceToken = null; }
+
+                          final profile = <String, String>{
+                            'id_kind': c.signupIdKind,
+                            'birth_date': c.sc('birth').text,
+                            'city': c.sc('city').text.trim(),
+                            'province': c.sc('province').text.trim(),
+                            'country': c.sc('country').text.trim(),
+                            'postal_code': c.sc('postal').text.trim(),
+                            'license_number': c.sc('license_no').text.trim(),
+                            'license_expiry': c.sc('license_exp').text,
+                            'vehicle_color': c.sc('v_color').text.trim(),
+                            'vehicle_year': c.sc('v_year').text.trim(),
+                            'vehicle_km': c.sc('v_km').text.trim(),
+                            'registration_expiry': c.sc('registration_exp').text,
+                            'insurance_expiry': c.sc('insurance_exp').text,
+                            'criminal_record_expiry': c.sc('criminal_exp').text,
+                            'tps_number': c.sc('tps').text.trim(),
+                            'tvq_number': c.sc('tvq').text.trim(),
+                          };
+
+                          final body = SignUpBody(
+                            email: c.emailController.text.trim(),
+                            address: c.addressController.text.trim(),
+                            identityNumber: c.identityNumberController.text.trim(),
+                            identificationType: c.identityType,
+                            fName: c.fNameController.text.trim(),
+                            lName: c.lNameController.text.trim(),
+                            phone: c.countryDialCode + c.phoneController.text.trim(),
+                            password: c.passwordController.text,
+                            confirmPassword: c.confirmPasswordController.text,
+                            deviceToken: c.getDeviceToken(),
+                            services: services,
+                            referralCode: c.referralCodeController.text.trim(),
+                            fcmToken: deviceToken,
+                            extra: {
+                              'vehicle_brand_id': c.signupBrand?.id ?? '',
+                              'vehicle_model_id': c.signupModel?.id ?? '',
+                              'vehicle_category_id': c.signupCategory?.id ?? '',
+                              'vehicle_plate': c.vehiclePlateController.text.trim(),
+                              'vehicle_licence_expire_date': c.sc('registration_exp').text,
+                              'vehicle_fuel_type': c.signupFuel,
+                              'sex': c.signupGender,
+                              'date_of_birth': c.sc('birth').text,
+                              'country': c.sc('country').text.trim(),
+                              'profile_extra': jsonEncode(profile),
+                            },
+                          );
+                          c.register(c.countryDialCode, body);
+                        },
+                      )),
+                    ]),
+                const SizedBox(height: Dimensions.paddingSizeDefault),
+              ]),
+            )),
           ]);
         }),
       ),

@@ -1,243 +1,152 @@
 import 'dart:io';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:ride_sharing_user_app/helper/email_checker.dart';
-import 'package:ride_sharing_user_app/common_widgets/image_widget.dart';
-import 'package:ride_sharing_user_app/features/auth/screens/vehicle_sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:ride_sharing_user_app/common_widgets/button_widget.dart';
+import 'package:ride_sharing_user_app/common_widgets/image_widget.dart';
 import 'package:ride_sharing_user_app/common_widgets/text_field_widget.dart';
 import 'package:ride_sharing_user_app/features/auth/controllers/auth_controller.dart';
+import 'package:ride_sharing_user_app/features/auth/screens/vehicle_sign_up_screen.dart';
 import 'package:ride_sharing_user_app/features/auth/widgets/signup_appbar_widget.dart';
+import 'package:ride_sharing_user_app/features/auth/widgets/signup_fields.dart';
 import 'package:ride_sharing_user_app/features/auth/widgets/text_field_title_widget.dart';
 import 'package:ride_sharing_user_app/features/splash/controllers/splash_controller.dart';
 import 'package:ride_sharing_user_app/helper/display_helper.dart';
+import 'package:ride_sharing_user_app/helper/email_checker.dart';
 import 'package:ride_sharing_user_app/util/dimensions.dart';
 import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/util/styles.dart';
 
+/// Étape 1/3 : Informations personnelles (comme Crisyo).
 class AdditionalSignUpScreen1 extends StatelessWidget {
   const AdditionalSignUpScreen1({super.key});
+
+  String? _missing(AuthController c) {
+    if (c.pickedProfileFile == null) return sxT('La photo de profil est requise', 'Profile photo is required');
+    if (c.fNameController.text.trim().isEmpty) return 'first_name_is_required'.tr;
+    if (c.lNameController.text.trim().isEmpty) return 'last_name_is_required'.tr;
+    if (c.identityNumberController.text.trim().isEmpty) return sxT('Le n° du document est requis', 'Document number is required');
+    if (c.signupGender.isEmpty) return sxT('Le sexe est requis', 'Gender is required');
+    if (c.sc('birth').text.isEmpty) return sxT('La date de naissance est requise', 'Birth date is required');
+    final phone = c.phoneController.text.trim();
+    if (phone.isEmpty) return 'phone_is_required'.tr;
+    if (!PhoneNumber.parse(c.countryDialCode + phone).isValid(type: PhoneNumberType.mobile)) return 'phone_number_is_not_valid'.tr;
+    final email = c.emailController.text.trim();
+    if (email.isEmpty) return 'email_is_required'.tr;
+    if (EmailChecker.isNotValid(email)) return 'enter_valid_email_address'.tr;
+    final pw = c.passwordController.text;
+    if (pw.isEmpty) return 'password_is_required'.tr;
+    if (pw.length < 8) return 'minimum_password_length_is_8'.tr;
+    if (c.confirmPasswordController.text.isEmpty) return 'confirm_password_is_required'.tr;
+    if (pw != c.confirmPasswordController.text) return 'password_is_mismatch'.tr;
+    if (c.addressController.text.trim().isEmpty) return 'address_is_required'.tr;
+    if (c.sc('city').text.trim().isEmpty) return sxT('La ville est requise', 'City is required');
+    if (c.sc('province').text.trim().isEmpty) return sxT('La province est requise', 'Province is required');
+    if (c.sc('country').text.trim().isEmpty) return sxT('Le pays est requis', 'Country is required');
+    if (c.sc('postal').text.trim().isEmpty) return sxT('Le code postal est requis', 'Postal code is required');
+    if (c.sc('license_no').text.trim().isEmpty) return sxT('Le n° de permis est requis', 'Licence number is required');
+    if (c.sc('license_exp').text.isEmpty) return sxT('L\'expiration du permis est requise', 'Licence expiry is required');
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: GetBuilder<AuthController>(builder: (authController){
-            return Column(children: [
-              const SignUpAppbarWidget(title: 'signup_as_a_driver', progressText: '1_of_3',enableBackButton: true),
+        child: GetBuilder<AuthController>(builder: (c) {
+          if (c.sc('country').text.isEmpty) { c.sc('country').text = 'Canada'; }
+          return Column(children: [
+            const SignUpAppbarWidget(title: 'signup_as_a_driver', progressText: '1_of_3', enableBackButton: true),
+            Expanded(child: SingleChildScrollView(
+              padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(sxT('Informations personnelles', 'Personal information'),
+                  style: textBold.copyWith(color: Theme.of(context).primaryColor, fontSize: 22)),
+                const SizedBox(height: Dimensions.paddingSizeDefault),
 
-              Expanded(child: SingleChildScrollView(
-                  child: Column(children: [
-                    const SizedBox(height: Dimensions.paddingSizeSignUp),
+                Row(children: [
+                  Container(height: 80, width: 80,
+                    decoration: BoxDecoration(shape: BoxShape.circle,
+                      border: Border.all(color: Theme.of(context).primaryColor, width: 1)),
+                    child: c.pickedProfileFile == null
+                      ? ClipRRect(borderRadius: BorderRadius.circular(50),
+                          child: const ImageWidget(image: '', height: 76, width: 76, placeholder: Images.personPlaceholder))
+                      : CircleAvatar(radius: 38, backgroundImage: FileImage(File(c.pickedProfileFile!.path))),
+                  ),
+                  const SizedBox(width: 16),
+                  OutlinedButton(onPressed: () => c.pickImage(false, true),
+                    child: Text(sxT('Photo de profil', 'Profile photo'))),
+                ]),
 
-                    Text('provide_basic_info'.tr,style: textBold.copyWith(color: Theme.of(context).primaryColor,fontSize: 22)),
-                    const SizedBox(height: Dimensions.paddingSizeSmall),
+                SxField(sxT('Prénom', 'First name'), c.fNameController, caps: TextCapitalization.words),
+                SxField(sxT('Nom', 'Last name'), c.lNameController, caps: TextCapitalization.words),
 
-                    Text('enter_your_information'.tr, style: textRegular.copyWith(
-                      color: Theme.of(context).primaryColor.withOpacity(0.5),fontSize: Dimensions.fontSizeSmall,
-                    )),
-                    const SizedBox(height: Dimensions.paddingSizeLarge),
+                SxDrop<String>(sxT('Type de pièce d\'identité', 'ID type'),
+                  hint: '', value: c.signupIdKind, items: const ['carte_identite', 'passeport'],
+                  text: (k) => k == 'passeport' ? sxT('Passeport', 'Passport') : sxT('Carte d\'identité', 'ID card'),
+                  onChanged: (v) { if (v != null) c.setSignupIdKind(v); }),
+                SxField(sxT('N° du document', 'Document number'), c.identityNumberController),
 
-                    Container(height: 80, width: 80,
-                      decoration: BoxDecoration(shape: BoxShape.circle,
-                        border: Border.all(color: Theme.of(context).primaryColor, width: 1)),
-                      child: Stack(alignment: AlignmentDirectional.center, clipBehavior: Clip.none, children: [
-                        authController.pickedProfileFile == null ?
-                        ClipRRect(borderRadius: BorderRadius.circular(50),
-                          child: const ImageWidget(image: '', height: 76, width: 76, placeholder: Images.personPlaceholder)) :
-                        CircleAvatar(radius: 38, backgroundImage: FileImage(File(authController.pickedProfileFile!.path))),
-                        Positioned(right: 0, bottom: -3, child: InkWell(
-                          onTap: () => authController.pickImage(false, true),
-                          child: Container(
-                            decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle),
-                            padding: const EdgeInsets.all(5),
-                            child: const Icon(Icons.camera_enhance_rounded, color: Colors.white, size: 13),
-                          ),
-                        )),
-                      ]),
-                    ),
-                    const SizedBox(height: Dimensions.paddingSizeLarge),
+                SxDrop<String>(sxT('Sexe', 'Gender'), hint: '—', value: c.signupGender.isEmpty ? null : c.signupGender,
+                  items: const ['male', 'female', 'other'],
+                  text: (g) => g == 'male' ? sxT('Homme', 'Male') : g == 'female' ? sxT('Femme', 'Female') : sxT('Autre', 'Other'),
+                  onChanged: (v) { if (v != null) c.setSignupGender(v); }),
+                SxDate(sxT('Date de naissance (aaaa-mm-jj)', 'Birth date'), c.sc('birth'), onChanged: c.update),
 
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        TextFieldTitleWidget(title: '${'first_name'.tr}*'),
+                TextFieldTitleWidget(title: sxT('Téléphone', 'Phone')),
+                TextFieldWidget(
+                  hintText: 'phone'.tr, inputType: TextInputType.number,
+                  countryDialCode: c.countryDialCode, controller: c.phoneController,
+                  focusNode: c.phoneNode, nextFocus: c.emailNode, inputAction: TextInputAction.next,
+                  onCountryChanged: (CountryCode cc) {
+                    c.countryDialCode = cc.dialCode!;
+                    c.setCountryCode(cc.dialCode!);
+                  },
+                ),
 
-                        TextFieldWidget(
-                          hintText: 'first_name'.tr,
-                          capitalization: TextCapitalization.words,
-                          inputType: TextInputType.name,
-                          prefixIcon: Images.person,
-                          controller: authController.fNameController,
-                          focusNode: authController.fNameNode,
-                          nextFocus: authController.lNameNode,
-                          inputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(width: Dimensions.paddingSizeDefault),
+                SxField('Email', c.emailController, type: TextInputType.emailAddress),
 
-                        TextFieldTitleWidget(title: '${'last_name'.tr}*'),
+                TextFieldTitleWidget(title: sxT('Mot de passe', 'Password')),
+                TextFieldWidget(hintText: 'password_hint'.tr, inputType: TextInputType.text, prefixIcon: Images.password,
+                  isPassword: true, controller: c.passwordController, focusNode: c.passwordNode,
+                  nextFocus: c.confirmPasswordNode, inputAction: TextInputAction.next),
+                TextFieldTitleWidget(title: '${'confirm_password'.tr}'),
+                TextFieldWidget(hintText: 'enter_confirm_password'.tr, inputType: TextInputType.text, prefixIcon: Images.password,
+                  isPassword: true, controller: c.confirmPasswordController, focusNode: c.confirmPasswordNode,
+                  nextFocus: c.referralNode, inputAction: TextInputAction.next),
 
-                        TextFieldWidget(
-                          hintText: 'last_name'.tr,
-                          capitalization: TextCapitalization.words,
-                          inputType: TextInputType.name,
-                          prefixIcon: Images.person,
-                          controller: authController.lNameController,
-                          focusNode: authController.lNameNode,
-                          nextFocus: authController.phoneNode,
-                          inputAction: TextInputAction.next,
-                        ),
+                SxField(sxT('Adresse', 'Address'), c.addressController, caps: TextCapitalization.words),
+                SxField(sxT('Ville', 'City'), c.sc('city'), caps: TextCapitalization.words),
+                SxField('Province', c.sc('province'), caps: TextCapitalization.words),
+                SxField(sxT('Pays', 'Country'), c.sc('country'), caps: TextCapitalization.words),
+                SxField(sxT('Code postal', 'Postal code'), c.sc('postal'), caps: TextCapitalization.characters),
 
-                        TextFieldTitleWidget(title: '${'phone'.tr}*'),
+                SxField(sxT('N° de permis de conduire', 'Driver licence number'), c.sc('license_no')),
+                SxDate(sxT('Expiration du permis', 'Licence expiry'), c.sc('license_exp'), future: true, onChanged: c.update),
 
-                        TextFieldWidget(
-                          hintText: 'phone'.tr,
-                          inputType: TextInputType.number,
-                          countryDialCode: authController.countryDialCode,
-                          controller: authController.phoneController,
-                          focusNode: authController.phoneNode,
-                          nextFocus: authController.emailNode,
-                          inputAction: TextInputAction.next,
-                          onCountryChanged: (CountryCode countryCode){
-                            authController.countryDialCode = countryCode.dialCode!;
-                            authController.setCountryCode(countryCode.dialCode!);
-                            FocusScope.of(context).requestFocus(authController.phoneNode);
-                          },
-                        ),
+                if (Get.find<SplashController>().config?.referralEarningStatus ?? false) ...[
+                  TextFieldTitleWidget(title: 'referral_code'.tr),
+                  TextFieldWidget(hintText: 'referral_code'.tr, capitalization: TextCapitalization.words,
+                    inputType: TextInputType.text, prefixIcon: Images.referralIcon1,
+                    controller: c.referralCodeController, focusNode: c.referralNode, inputAction: TextInputAction.done),
+                ],
 
-                        TextFieldTitleWidget(title: '${'email'.tr}*'),
-
-                        TextFieldWidget(
-                          hintText: 'email'.tr,
-                          inputType: TextInputType.emailAddress,
-                          prefixIcon: Images.email,
-                          controller: authController.emailController,
-                          focusNode: authController.emailNode,
-                          nextFocus: authController.addressNode,
-                          inputAction: TextInputAction.next,
-                        ),
-
-                        TextFieldTitleWidget(title: '${'address'.tr}*'),
-
-                        TextFieldWidget(
-                          hintText: 'address'.tr,
-                          capitalization: TextCapitalization.words,
-                          inputType: TextInputType.text,
-                          prefixIcon: Images.location,
-                          controller: authController.addressController,
-                          focusNode: authController.addressNode,
-                          nextFocus: authController.passwordNode,
-                          inputAction: TextInputAction.next,
-                        ),
-
-                        TextFieldTitleWidget(title: '${'password'.tr}*'),
-
-                        TextFieldWidget(
-                          hintText: 'password_hint'.tr,
-                          inputType: TextInputType.text,
-                          prefixIcon: Images.password,
-                          isPassword: true,
-                          controller: authController.passwordController,
-                          focusNode: authController.passwordNode,
-                          nextFocus: authController.confirmPasswordNode,
-                          inputAction: TextInputAction.next,
-                        ),
-
-                        TextFieldTitleWidget(title: '${'confirm_password'.tr}*'),
-
-                        TextFieldWidget(
-                          hintText: 'enter_confirm_password'.tr,
-                          inputType: TextInputType.text,
-                          prefixIcon: Images.password,
-                          controller: authController.confirmPasswordController,
-                          focusNode: authController.confirmPasswordNode,
-                          nextFocus: authController.referralNode,
-                          inputAction: TextInputAction.next,
-                          isPassword: true,
-                        ),
-
-                        if(Get.find<SplashController>().config?.referralEarningStatus ?? false)...[
-                          TextFieldTitleWidget(title: 'referral_code'.tr),
-
-                          TextFieldWidget(
-                            hintText: 'referral_code'.tr,
-                            capitalization: TextCapitalization.words,
-                            inputType: TextInputType.text,
-                            prefixIcon: Images.referralIcon1,
-                            controller: authController.referralCodeController,
-                            focusNode: authController.referralNode,
-                            inputAction: TextInputAction.done,
-                          ),
-                        ],
-
-                      ]),
-                    ),
-                    const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                    ButtonWidget(
-                      margin: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-                      radius: Dimensions.radiusExtraLarge,
-                      buttonText: 'next'.tr,
-                      onPressed: (){
-                        String fName = authController.fNameController.text;
-                        String lName = authController.lNameController.text;
-                        String phone = authController.phoneController.text.trim();
-                        String password = authController.passwordController.text;
-                        String confirmPassword = authController.confirmPasswordController.text;
-
-                        String emailV = authController.emailController.text.trim();
-                        String addressV = authController.addressController.text.trim();
-
-                        if(authController.pickedProfileFile == null){
-                          showCustomSnackBar('profile_image_is_required'.tr);
-                        }else if(fName.isEmpty){
-                          showCustomSnackBar('first_name_is_required'.tr);
-                          FocusScope.of(context).requestFocus(authController.fNameNode);
-                        }else if(lName.isEmpty){
-                          showCustomSnackBar('last_name_is_required'.tr);
-                          FocusScope.of(context).requestFocus(authController.lNameNode);
-                        }else if(phone.isEmpty){
-                          showCustomSnackBar('phone_is_required'.tr);
-                          FocusScope.of(context).requestFocus(authController.phoneNode);
-                        }else if(!PhoneNumber.parse(authController.countryDialCode + phone).isValid(type: PhoneNumberType.mobile)){
-                          showCustomSnackBar('phone_number_is_not_valid'.tr);
-                          FocusScope.of(context).requestFocus(authController.phoneNode);
-                        }else if(emailV.isEmpty){
-                          showCustomSnackBar('email_is_required'.tr);
-                          FocusScope.of(context).requestFocus(authController.emailNode);
-                        }else if(EmailChecker.isNotValid(emailV)){
-                          showCustomSnackBar('enter_valid_email_address'.tr);
-                          FocusScope.of(context).requestFocus(authController.emailNode);
-                        }else if(addressV.isEmpty){
-                          showCustomSnackBar('address_is_required'.tr);
-                          FocusScope.of(context).requestFocus(authController.addressNode);
-                        }else if(password.isEmpty){
-                          showCustomSnackBar('password_is_required'.tr);
-                          FocusScope.of(context).requestFocus(authController.passwordNode);
-                        }else if(password.length<8){
-                          showCustomSnackBar('minimum_password_length_is_8'.tr);
-                          FocusScope.of(context).requestFocus(authController.passwordNode);
-                        }else if(confirmPassword.isEmpty){
-                          showCustomSnackBar('confirm_password_is_required'.tr);
-                          FocusScope.of(context).requestFocus(authController.confirmPasswordNode);
-                        }else if(password != confirmPassword){
-                          showCustomSnackBar('password_is_mismatch'.tr);
-                          FocusScope.of(context).requestFocus(authController.confirmPasswordNode);
-                        }else{
-                          Get.to(()=> const VehicleSignUpScreen());
-
-                        }
-
-                        },
-                    ),
-                    const SizedBox(height: Dimensions.paddingSizeLarge),
-                  ])
-              ))
-
-            ]);
-          })
+                const SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                ButtonWidget(
+                  buttonText: 'next'.tr, radius: 50,
+                  onPressed: () {
+                    final m = _missing(c);
+                    if (m != null) { showCustomSnackBar(m); return; }
+                    c.setIdentityType(c.signupIdKind == 'passeport' ? 'passport' : 'nid');
+                    Get.to(() => const VehicleSignUpScreen());
+                  },
+                ),
+                const SizedBox(height: Dimensions.paddingSizeLarge),
+              ]),
+            )),
+          ]);
+        }),
       ),
     );
   }

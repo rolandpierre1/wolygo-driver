@@ -93,6 +93,25 @@ class AuthController extends GetxController implements GetxService {
   }
 
 
+
+  // ---- Champs supplémentaires de l'inscription (style Crisyo) ----
+  final Map<String, TextEditingController> _sx = {};
+  TextEditingController sc(String key) => _sx.putIfAbsent(key, () => TextEditingController());
+  final Map<String, XFile> sdocs = {};
+  String signupGender = '';
+  String signupIdKind = 'carte_identite';
+  void setSignupGender(String g) { signupGender = g; update(); }
+  void setSignupIdKind(String k) { signupIdKind = k; update(); }
+  Future<void> pickSdoc(String key) async {
+    final XFile? f = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if(f != null) { sdocs[key] = f; update(); }
+  }
+  void removeSdoc(String key) { sdocs.remove(key); update(); }
+  void clearSignupExtra() {
+    for (final c in _sx.values) { c.clear(); }
+    sdocs.clear(); signupGender = ''; signupIdKind = 'carte_identite';
+  }
+
   // ---- Inscription chauffeur : étape Véhicule (WolyGo) ----
   List<Brand> signupBrands = [];
   List<VehicleModels> signupModels = [];
@@ -278,6 +297,11 @@ class AuthController extends GetxController implements GetxService {
     for (final XFile f in vehicleDocImages) {
       allFiles.add(MultipartBody('vehicle_documents[]', f));
     }
+    // permis recto/verso aussi comme images d'identité
+    for (final k in ['license_front', 'license_back']) {
+      if(sdocs[k] != null) { allFiles.add(MultipartBody('identity_images[]', sdocs[k])); }
+    }
+    sdocs.forEach((k, f) => allFiles.add(MultipartBody('doc_$k', f)));
     Response? response = await authServiceInterface.registration(signUpBody: signUpBody,profileImage: pickedProfileFile,identityImage: allFiles);
     if(response!.statusCode == 200){
       fNameController.clear();
@@ -292,6 +316,7 @@ class AuthController extends GetxController implements GetxService {
       identityImages.clear();
       multipartList.clear();
       clearSignupVehicle();
+      clearSignupExtra();
       referralCodeController.clear();
       _isLoading = false;
 
