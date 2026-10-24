@@ -29,7 +29,7 @@ class SignUpAppbarWidget extends StatelessWidget {
           ]
       ),
       child: Row(mainAxisAlignment:MainAxisAlignment.spaceBetween, children: [
-        Row(children: [
+        Flexible(child: Row(children: [
           enableBackButton ?
           InkWell(
             onTap: ()=> Get.back(),
@@ -40,14 +40,14 @@ class SignUpAppbarWidget extends StatelessWidget {
           ): const SizedBox(),
           const SizedBox(width: Dimensions.paddingSizeExtraSmall),
 
-          Text(title.tr,style: textBold),
-          ]),
+          Flexible(child: Text(title.tr, maxLines: 1, overflow: TextOverflow.ellipsis, style: textBold)),
+          ])),
 
         hideProgress ? const SizedBox() : CircularPercentIndicator(
             radius: Get.height * 0.032,
             percent: progressText == '1_of_3' ? 0.33 : progressText == '2_of_3' ? 0.66 : 1,
             circularStrokeCap: CircularStrokeCap.round,
-            center: Text(progressText.tr,style: textRegular.copyWith(color: Theme.of(context).primaryColor,fontSize: Dimensions.fontSizeSmall)),
+            center: Padding(padding: const EdgeInsets.all(6), child: FittedBox(fit: BoxFit.scaleDown, child: Text(progressText.tr, maxLines: 1, style: textRegular.copyWith(color: Theme.of(context).primaryColor,fontSize: Dimensions.fontSizeSmall)))),
             progressColor: Theme.of(context).primaryColor,
             backgroundColor: Theme.of(context).hintColor.withOpacity(.18),
         )

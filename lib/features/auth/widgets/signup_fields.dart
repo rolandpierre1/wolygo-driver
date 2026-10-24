@@ -170,7 +170,7 @@ class SxBackButton extends StatelessWidget {
         minimumSize: const Size.fromHeight(50),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       ),
-      child: Text(sxT('Précédent', 'Previous'), style: textBold.copyWith(color: c)),
+      child: FittedBox(fit: BoxFit.scaleDown, child: Text(sxT('Précédent', 'Previous'), maxLines: 1, style: textBold.copyWith(color: c))),
     );
   }
 }

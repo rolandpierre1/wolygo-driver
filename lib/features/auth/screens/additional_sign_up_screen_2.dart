@@ -67,10 +67,10 @@ class AdditionalSignUpScreen2 extends StatelessWidget {
                 c.isLoading
                   ? Center(child: SpinKitCircle(color: Theme.of(context).primaryColor, size: 40.0))
                   : Row(children: [
-                      const Expanded(child: SxBackButton()),
+                      const Expanded(flex: 2, child: SxBackButton()),
                       const SizedBox(width: 12),
-                      Expanded(child: ButtonWidget(
-                        buttonText: sxT('Soumettre l\'inscription', 'Submit'), radius: 50,
+                      Expanded(flex: 3, child: ButtonWidget(
+                        buttonText: sxT('Soumettre', 'Submit'), radius: 50,
                         onPressed: () async {
                           final m = _missing(c);
                           if (m != null) { showCustomSnackBar(m); return; }
