@@ -31,7 +31,7 @@ class TypeButtonWidget extends StatelessWidget {
               crossAxisAlignment : CrossAxisAlignment.center,children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Text(name.tr,
+                  child: FittedBox(fit: BoxFit.scaleDown, child: Text(name.tr, maxLines: 1,
                       textAlign: TextAlign.center,
                       style: textSemiBold.copyWith(
                         color : index == selectedIndex ?
@@ -39,7 +39,7 @@ class TypeButtonWidget extends StatelessWidget {
                         Theme.of(context).hintColor.withOpacity(.65),
                         fontSize: Dimensions.fontSizeLarge,
                       ),
-                  ),
+                  )),
                 ),
               ],
             ),

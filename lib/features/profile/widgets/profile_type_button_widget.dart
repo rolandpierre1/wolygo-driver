@@ -28,12 +28,12 @@ class ProfileTypeButtonWidget extends StatelessWidget {
                   crossAxisAlignment : CrossAxisAlignment.center,children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Text(profileTypeName.tr,
+                      child: FittedBox(fit: BoxFit.scaleDown, child: Text(profileTypeName.tr, maxLines: 1,
                           textAlign: TextAlign.center,
                           style: textSemiBold.copyWith(
                               color : index == rideController.profileTypeIndex?
                               Colors.white:
-                              Theme.of(context).hintColor.withOpacity(.65), fontSize: Dimensions.fontSizeLarge)),
+                              Theme.of(context).hintColor.withOpacity(.65), fontSize: Dimensions.fontSizeLarge))),
                     ),
                   ],),
               ),

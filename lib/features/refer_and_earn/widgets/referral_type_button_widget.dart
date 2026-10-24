@@ -33,14 +33,14 @@ class ReferralTypeButtonWidget extends StatelessWidget {
               crossAxisAlignment : CrossAxisAlignment.center,children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Text(referralType.tr,
+                  child: FittedBox(fit: BoxFit.scaleDown, child: Text(referralType.tr, maxLines: 1,
                     textAlign: TextAlign.center,
                     style: textSemiBold.copyWith(
                       color : index == referAndEarnController.referralTypeIndex ?
                       Colors.white :
                       Theme.of(context).hintColor.withOpacity(.65), fontSize: Dimensions.fontSizeLarge,
                     ),
-                  ),
+                  )),
                 ),
               ],
             ),

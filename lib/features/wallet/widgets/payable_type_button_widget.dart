@@ -34,14 +34,14 @@ class PayableTypeButtonWidget extends StatelessWidget {
               crossAxisAlignment : CrossAxisAlignment.center,children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Text(payableType.tr,
+                  child: FittedBox(fit: BoxFit.scaleDown, child: Text(payableType.tr, maxLines: 1,
                     textAlign: TextAlign.center,
                     style: textSemiBold.copyWith(
                       color : index == walletController.payableTypeIndex ?
                       Colors.white :
                       Theme.of(context).hintColor.withOpacity(.65), fontSize: Dimensions.fontSizeLarge,
                     ),
-                  ),
+                  )),
                 ),
               ],
             ),

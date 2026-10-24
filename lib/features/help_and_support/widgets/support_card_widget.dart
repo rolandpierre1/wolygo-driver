@@ -25,7 +25,7 @@ class SupportCardWidget extends StatelessWidget {
           )]
       ),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Row(children: [
+        Expanded(child: Row(children: [
           Container(
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
@@ -41,10 +41,11 @@ class SupportCardWidget extends StatelessWidget {
           ),
           const SizedBox(width: Dimensions.paddingSizeSmall),
 
-          Text(contextText.tr,style: textMedium)
-        ]),
+          Expanded(child: Text(contextText.tr,style: textMedium, maxLines: 2, overflow: TextOverflow.ellipsis))
+        ])),
+        const SizedBox(width: Dimensions.paddingSizeSmall),
 
-        Icon(Icons.arrow_forward_ios_rounded)
+        const Icon(Icons.arrow_forward_ios_rounded)
       ]),
     );
   }
