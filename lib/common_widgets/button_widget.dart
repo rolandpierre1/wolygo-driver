@@ -44,10 +44,10 @@ class ButtonWidget extends StatelessWidget {
             padding: const EdgeInsets.only(right: Dimensions.paddingSizeExtraSmall),
             child: Icon(icon, color: transparent ? Theme.of(context).primaryColor : Colors.white),
           ) : const SizedBox(),
-          Text(buttonText, textAlign: TextAlign.center, style: textBold.copyWith(
+          Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: Text(buttonText, textAlign: TextAlign.center, maxLines: 1, style: textBold.copyWith(
             color: textColor ?? (transparent ? Theme.of(context).primaryColor : Colors.white),
             fontSize: fontSize ?? Dimensions.fontSizeLarge,
-          )),
+          )))),
         ]),
       ),
     )));
