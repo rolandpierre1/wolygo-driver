@@ -251,25 +251,19 @@ class _WolygoWalletScreenState extends State<WolygoWalletScreen> with WidgetsBin
                 style: TextStyle(fontSize: 12, color: Colors.black54)),
           ),
         if (_ready)
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(border: Border.all(color: const Color(0xFFD9D9D9)), borderRadius: BorderRadius.circular(18)),
-            child: Row(children: [
-              const Icon(Icons.verified, color: Colors.green),
-              const SizedBox(width: 10),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('Compte enregistré via Stripe', style: TextStyle(fontWeight: FontWeight.w600)),
-                if (_accounts.isEmpty)
-                  const Text('Compte bancaire enregistré', style: TextStyle(fontSize: 13, color: Colors.black54)),
-                ..._accounts.map((a) => Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text('${a['label']}${a['name'] != null && '${a['name']}'.isNotEmpty ? ' · ${a['name']}' : ''}',
-                          style: const TextStyle(fontSize: 13, color: Colors.black54)),
-                    )),
-              ])),
-              TextButton(onPressed: _busy ? null : () => _openStripe(manage: true), child: const Text('Modifier')),
-            ]),
-          ),
+          Column(children: [
+            const Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: Row(children: [
+                Icon(Icons.verified, color: Colors.green),
+                SizedBox(width: 8),
+                Text('Compte enregistré via Stripe', style: TextStyle(fontWeight: FontWeight.w600)),
+              ]),
+            ),
+            _accountRow('bank', 'Compte bancaire', Icons.account_balance_outlined),
+            const SizedBox(height: 8),
+            _accountRow('card', 'Carte de débit', Icons.credit_card),
+          ]),
         const SizedBox(height: 16),
         ...methods.map((m) {
           final key = '${m['method']}';
@@ -306,6 +300,29 @@ class _WolygoWalletScreenState extends State<WolygoWalletScreen> with WidgetsBin
           );
         }),
         if (methods.isEmpty) const Text('Aucune méthode de paiement n\'est disponible pour le moment.'),
+      ]),
+    );
+  }
+
+  Widget _accountRow(String type, String title, IconData icon) {
+    final list = _accounts.where((a) => '${a['type']}' == type).toList();
+    final text = list.isEmpty
+        ? 'Non ajouté'
+        : list.map((a) => '${a['name'] != null && '${a['name']}'.isNotEmpty ? '${a['name']} ' : ''}•••• ${a['last4']}').join(' · ');
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(border: Border.all(color: const Color(0xFFD9D9D9)), borderRadius: BorderRadius.circular(18)),
+      child: Row(children: [
+        Icon(icon, color: _ink),
+        const SizedBox(width: 10),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(text, style: const TextStyle(fontSize: 13, color: Colors.black54)),
+        ])),
+        TextButton(
+          onPressed: _busy ? null : () => _openStripe(manage: true),
+          child: Text(list.isEmpty ? 'Ajouter' : 'Modifier'),
+        ),
       ]),
     );
   }
