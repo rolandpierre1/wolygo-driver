@@ -68,13 +68,13 @@ class TripCard extends StatelessWidget {
           child: Row(children: [
             Stack(children: [
               Container(
-                width: 90, height: Get.height * 0.105,
+                width: 90, constraints: BoxConstraints(minHeight: Get.height * 0.105),
                 decoration: BoxDecoration(
                     color: Theme.of(context).hintColor.withOpacity(.15),
                     borderRadius: BorderRadius.circular(Dimensions.paddingSizeSmall)
                 ),
                 child: Padding(padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                  child: Column(children: [
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
                     tripModel.type == 'parcel' ?
                     Image.asset(Images.parcel,height: 50) :
                     Image.asset(height: 50,
@@ -93,6 +93,7 @@ class TripCard extends StatelessWidget {
                       tripModel.vehicleCategory!.name!
                           : '' :
                       'parcel'.tr,
+                      maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,
                       style: textMedium.copyWith(
                         fontSize: Dimensions.fontSizeExtraSmall,
                         color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.4),

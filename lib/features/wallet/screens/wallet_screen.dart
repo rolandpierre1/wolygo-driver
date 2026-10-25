@@ -111,7 +111,7 @@ class _WalletScreenState extends State<WalletScreen> {
               GetBuilder<ProfileController>(builder: (profileController) {
                 return Padding(
                   padding: const EdgeInsets.only(right: Dimensions.paddingSizeDefault),
-                  child: SizedBox(height: 165,
+                  child: SizedBox(height: 195,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,

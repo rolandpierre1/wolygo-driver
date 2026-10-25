@@ -44,7 +44,7 @@ class WalletAmountTypeCardWidget extends StatelessWidget {
             ),
           ),
 
-          Text(title, style: textRegular.copyWith(
+          Text(title, maxLines: 2, overflow: TextOverflow.ellipsis, style: textRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
             color: haveBorderColor ?
             Theme.of(context).primaryColor :
