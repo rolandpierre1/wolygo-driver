@@ -131,10 +131,10 @@ class ProfileEditScreenState extends State<ProfileEditScreen>  with TickerProvid
                     child: CheckboxListTile(
                       tileColor: isRideShare ? Theme.of(context).primaryColor.withOpacity(0.05) : null,
                       contentPadding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
-                      title: Text('ride_share'.tr,style: textBold.copyWith(
+                      title: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child: Text('ride_share'.tr, maxLines: 1, style: textBold.copyWith(
                           fontSize: 12,
                           color: Theme.of(context).textTheme.bodyMedium!.color
-                      )),
+                      ))),
                       value: isRideShare,
                       onChanged: (value){
                         isRideShare = value!;
@@ -159,10 +159,10 @@ class ProfileEditScreenState extends State<ProfileEditScreen>  with TickerProvid
                     child: CheckboxListTile(
                       tileColor: isParcelDelivery ? Theme.of(context).primaryColor.withOpacity(0.05) : null,
                       contentPadding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
-                      title: Text('parcel_delivery'.tr,style: textBold.copyWith(
+                      title: FittedBox(fit: BoxFit.scaleDown, alignment: Alignment.centerLeft, child: Text('parcel_delivery'.tr, maxLines: 1, style: textBold.copyWith(
                           fontSize: 12,
                           color: Theme.of(context).textTheme.bodyMedium!.color
-                      )),
+                      ))),
                       value: isParcelDelivery,
                       onChanged: (value){
                         isParcelDelivery = value!;
@@ -216,16 +216,17 @@ class ProfileEditScreenState extends State<ProfileEditScreen>  with TickerProvid
                     child: Icon(Icons.warning,color: Theme.of(context).colorScheme.primaryContainer,size: 12),
                   ),
 
-                  Padding(
+                  Expanded(child: Padding(
                     padding:const EdgeInsets.fromLTRB(5,17,0,8),
                     child: Text(
                       "phone_number_isn't_editable".tr,
+                      maxLines: 2, overflow: TextOverflow.ellipsis,
                       style: textRegular.copyWith(
                         color: Theme.of(context).hintColor,
                         fontSize: Dimensions.fontSizeSmall,
                       ),
                     ),
-                  )
+                  ))
                 ]),
 
                 TextFieldWidget(
