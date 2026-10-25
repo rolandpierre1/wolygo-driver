@@ -18,7 +18,8 @@ class ProfileItemWidget extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeExtraLarge),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title.tr, style: textMedium.copyWith(),),
+          Flexible(child: Text(title.tr, style: textMedium.copyWith(), maxLines: 2, overflow: TextOverflow.ellipsis)),
+          const SizedBox(width: Dimensions.paddingSizeSmall),
           isLevel?
           Container(decoration: BoxDecoration(
               color: Theme.of(context).primaryColor.withOpacity(.10),
@@ -46,7 +47,8 @@ class ProfileItemWidget extends StatelessWidget {
 
             },
           ):
-          Text(value, style: textRegular.copyWith(color: Theme.of(context).hintColor),),
+          Flexible(child: Text(value, textAlign: TextAlign.end, maxLines: 2, overflow: TextOverflow.ellipsis,
+            style: textRegular.copyWith(color: Theme.of(context).hintColor),)),
         ],
       ),
     );
