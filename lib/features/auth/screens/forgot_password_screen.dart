@@ -44,11 +44,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
 
                 Row(children: [
-                  Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
                     Text('forgot_password'.tr,
                       style: textBold.copyWith(color: Theme.of(context).primaryColor,fontSize: Dimensions.fontSizeExtraLarge,)),
                     Text('enter_your_verified_phone_number'.tr,style: textRegular.copyWith(color: Theme.of(context).hintColor),),
-                    const SizedBox(height: Dimensions.paddingSizeLarge,)])]),
+                    const SizedBox(height: Dimensions.paddingSizeLarge,)]))]),
 
               TextFieldWidget(
                 hintText: 'phone'.tr,

@@ -116,7 +116,7 @@ class _PaymentReceivedScreenState extends State<PaymentReceivedScreen> with Widg
                       ),
                       child: IntrinsicHeight(
                         child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                          Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                          Flexible(child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                             Text('total_trip_cost'.tr,style: textRegular),
 
                             Text(PriceConverter.convertPrice(
@@ -133,11 +133,11 @@ class _PaymentReceivedScreenState extends State<PaymentReceivedScreen> with Widg
                                 fontSize: Dimensions.fontSizeLarge,
                               ),
                             ),
-                          ]),
+                          ])),
 
                           VerticalDivider(thickness: 1,color: Theme.of(context).hintColor.withOpacity(0.5)),
 
-                          Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                          Flexible(child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                             Text('admin_will_pay'.tr,style: textRegular),
 
                             Text(
@@ -153,7 +153,7 @@ class _PaymentReceivedScreenState extends State<PaymentReceivedScreen> with Widg
                                 fontSize: Dimensions.fontSizeLarge,
                               ),
                             ),
-                          ]),
+                          ])),
                         ]),
                       ),
                     ),
