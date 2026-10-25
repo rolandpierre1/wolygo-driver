@@ -222,13 +222,13 @@ class _SignInScreenState extends State<SignInScreen> {
                       (Get.find<SplashController>().config!.selfRegistration != null &&
                           Get.find<SplashController>().config!.selfRegistration!) ?
                       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        Text(
+                        Flexible(child: Text(
                           '${'do_not_have_an_account'.tr} ',
                           style: textRegular.copyWith(
                             fontSize: Dimensions.fontSizeSmall,
                             color: Theme.of(context).hintColor,
                           ),
-                        ),
+                        )),
 
                         TextButton(
                           onPressed: () =>  Get.to(()=> const SignUpScreen()),

@@ -261,7 +261,7 @@ class _MessageScreenState extends State<MessageScreen> {
                   const Icon(Icons.block),
                   const SizedBox(width: 5),
       
-                  Text("you_could't_replay_you_have_no_trip".tr),
+                  Flexible(child: Text("you_could't_replay_you_have_no_trip".tr, textAlign: TextAlign.center)),
                 ]),
               ),
             ),
