@@ -70,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ) :
                       profileController.profileInfo!.vehicle != null ?
                       ImageWidget(width: 80,height: 80,
-                        image:
+                        image: profileController.profileInfo!.vehicle!.photoUrl ??
                         '${Get.find<SplashController>().config!.imageBaseUrl!.vehicleCategory}/''${
                             profileController.profileInfo!.vehicle!.category!.image}',
                       ) :
@@ -198,6 +198,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ProfileItemWidget(title: 'vehicle_brand',
                         value: profileController.profileInfo?.vehicle?.brand?.name ?? '',
                       ),
+
+                      if((profileController.profileInfo?.vehicle?.color ?? '').isNotEmpty)
+                        ProfileItemWidget(title: 'vehicle_color',
+                          value: 'color_${profileController.profileInfo!.vehicle!.color}'.tr,
+                        ),
 
                       ProfileItemWidget(title: 'vehicle_model',
                         value: profileController.profileInfo?.vehicle?.model?.name ?? '',

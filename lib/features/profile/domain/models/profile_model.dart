@@ -212,6 +212,8 @@ class Vehicle {
   int? isActive;
   String? createdAt;
   double? parcelWeightCapacity;
+  String? color;
+  String? photoUrl;
 
   Vehicle(
       {
@@ -228,7 +230,9 @@ class Vehicle {
         this.documents,
         this.isActive,
         this.createdAt,
-        this.parcelWeightCapacity
+        this.parcelWeightCapacity,
+        this.color,
+        this.photoUrl
       });
 
   Vehicle.fromJson(Map<String, dynamic> json) {
@@ -249,6 +253,8 @@ class Vehicle {
     createdAt = json['created_at'];
     parcelWeightCapacity = json['parcel_weight_capacity'] == null ? null :
     double.tryParse('${json['parcel_weight_capacity']}');
+    color = json['color'];
+    photoUrl = json['photo_url'];
   }
 
   Map<String, dynamic> toJson() {

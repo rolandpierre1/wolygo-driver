@@ -43,11 +43,11 @@ class ProfileRepository implements ProfileRepositoryInterface{
   }
 
   @override
-  Future<Response?> addNewVehicle(VehicleBody vehicleBody, List<MultipartDocument> file ) async {
+  Future<Response?> addNewVehicle(VehicleBody vehicleBody, List<MultipartDocument> file, {XFile? vehiclePhoto} ) async {
     return await apiClient.postMultipartData(
         AppConstants.addNewVehicle,
         vehicleBody.toJson(),
-        [],
+        vehiclePhoto != null ? [MultipartBody('vehicle_photo', vehiclePhoto)] : [],
         null,
         file
 
@@ -55,7 +55,17 @@ class ProfileRepository implements ProfileRepositoryInterface{
   }
 
   @override
-  Future<Response?> updateVehicle(VehicleBody vehicleBody,String driverId) async {
+  Future<Response?> updateVehicle(VehicleBody vehicleBody,String driverId, {XFile? vehiclePhoto}) async {
+    if(vehiclePhoto != null) {
+      // nouvelle photo: envoi en multipart
+      return await apiClient.postMultipartData(
+        AppConstants.updateVehicle+driverId,
+        vehicleBody.toJson(),
+        [MultipartBody('vehicle_photo', vehiclePhoto)],
+        null,
+        [],
+      );
+    }
     return await apiClient.postData(
         AppConstants.updateVehicle+driverId,
         vehicleBody.toJson(),

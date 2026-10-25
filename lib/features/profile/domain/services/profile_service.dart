@@ -11,13 +11,13 @@ class ProfileService implements ProfileServiceInterface{
   ProfileService({required this.profileRepositoryInterface});
 
   @override
-  Future addNewVehicle(VehicleBody vehicleBody, List<MultipartDocument> file) {
-    return profileRepositoryInterface.addNewVehicle(vehicleBody, file);
+  Future addNewVehicle(VehicleBody vehicleBody, List<MultipartDocument> file, {XFile? vehiclePhoto}) {
+    return profileRepositoryInterface.addNewVehicle(vehicleBody, file, vehiclePhoto: vehiclePhoto);
   }
 
   @override
-  Future updateVehicle(VehicleBody vehicleBody, String driverId) {
-    return profileRepositoryInterface.updateVehicle(vehicleBody, driverId);
+  Future updateVehicle(VehicleBody vehicleBody, String driverId, {XFile? vehiclePhoto}) {
+    return profileRepositoryInterface.updateVehicle(vehicleBody, driverId, vehiclePhoto: vehiclePhoto);
   }
 
   @override

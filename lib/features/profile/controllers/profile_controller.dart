@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ride_sharing_user_app/data/api_checker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ride_sharing_user_app/data/api_client.dart';
 import 'package:ride_sharing_user_app/features/dashboard/screens/dashboard_screen.dart';
 import 'package:ride_sharing_user_app/features/map/controllers/map_controller.dart';
@@ -313,10 +314,10 @@ class ProfileController extends GetxController implements GetxService{
 
 
   bool creating = false;
-  Future<void> addNewVehicle(VehicleBody vehicleBody) async {
+  Future<void> addNewVehicle(VehicleBody vehicleBody, {XFile? vehiclePhoto}) async {
     creating = true;
     update();
-    Response? response = await profileServiceInterface.addNewVehicle(vehicleBody, documents);
+    Response? response = await profileServiceInterface.addNewVehicle(vehicleBody, documents, vehiclePhoto: vehiclePhoto);
     if(response!.statusCode == 200){
       creating = false;
       getProfileInfo().then((value) {
@@ -333,10 +334,10 @@ class ProfileController extends GetxController implements GetxService{
     update();
   }
 
-  Future<Response> updateVehicle(VehicleBody vehicleBody, String driverId) async {
+  Future<Response> updateVehicle(VehicleBody vehicleBody, String driverId, {XFile? vehiclePhoto}) async {
     creating = true;
     update();
-    Response? response = await profileServiceInterface.updateVehicle(vehicleBody, driverId);
+    Response? response = await profileServiceInterface.updateVehicle(vehicleBody, driverId, vehiclePhoto: vehiclePhoto);
     if(response!.statusCode == 200){
       creating = false;
       getProfileInfo().then((value) {

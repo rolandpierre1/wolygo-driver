@@ -4,6 +4,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:ride_sharing_user_app/util/vehicle_colors.dart';
 import 'package:ride_sharing_user_app/features/profile/domain/models/profile_model.dart';
 import 'package:ride_sharing_user_app/helper/display_helper.dart';
 import 'package:ride_sharing_user_app/util/dimensions.dart';
@@ -43,6 +45,45 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
   PlatformFile? fileNamed;
   File? file;
   int? fileSize;
+  XFile? vehiclePhoto;
+  String? selectedColor;
+
+  Future<void> _pickVehiclePhoto(ImageSource source) async {
+    try {
+      final XFile? picked = await ImagePicker().pickImage(
+        source: source, imageQuality: 75, maxWidth: 1600, maxHeight: 1600,
+      );
+      if(picked != null) {
+        setState(() => vehiclePhoto = picked);
+      }
+    } catch (_) {
+      showCustomSnackBar('vehicle_photo_error'.tr);
+    }
+  }
+
+  void _chooseVehiclePhotoSource() {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: SafeArea(child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ListTile(
+            leading: const Icon(Icons.photo_camera),
+            title: Text('vehicle_photo_take'.tr),
+            onTap: () { Get.back(); _pickVehiclePhoto(ImageSource.camera); },
+          ),
+          ListTile(
+            leading: const Icon(Icons.photo_library),
+            title: Text('vehicle_photo_gallery'.tr),
+            onTap: () { Get.back(); _pickVehiclePhoto(ImageSource.gallery); },
+          ),
+        ])),
+      ),
+    );
+  }
 
 
 
@@ -55,6 +96,7 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
       Get.find<ProfileController>().setStartDate(DateTime.parse(widget.vehicleInfo!.licenceExpireDate!));
       Get.find<ProfileController>().setFuelType(widget.vehicleInfo!.fuelType!, false);
       parcelWeightCapacity.text = (widget.vehicleInfo?.parcelWeightCapacity ?? '').toString();
+      selectedColor = VehicleColors.all.containsKey(widget.vehicleInfo?.color) ? widget.vehicleInfo?.color : null;
     }
     super.initState();
   }
@@ -297,6 +339,78 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
                 ),
               ),
 
+              TextFieldTitleWidget(title: 'vehicle_color'.tr),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  border: Border.all(width: .7,color: Theme.of(context).hintColor.withOpacity(.3)),
+                  borderRadius: BorderRadius.circular(Dimensions.paddingSizeExtraLarge),
+                ),
+                child: DropdownButton<String>(
+                  value: selectedColor,
+                  hint: Text('select_vehicle_color'.tr, style: textRegular.copyWith(
+                    color: Theme.of(context).hintColor,
+                  )),
+                  items: VehicleColors.all.keys.map((String key) {
+                    return DropdownMenuItem<String>(
+                      value: key,
+                      child: Row(children: [
+                        Container(
+                          width: 18, height: 18,
+                          decoration: BoxDecoration(
+                            color: VehicleColors.of(key), shape: BoxShape.circle,
+                            border: Border.all(color: Theme.of(context).hintColor.withOpacity(.6), width: .8),
+                          ),
+                        ),
+                        const SizedBox(width: Dimensions.paddingSizeSmall),
+                        Flexible(child: Text('color_$key'.tr, maxLines: 1, overflow: TextOverflow.ellipsis,
+                          style: textRegular.copyWith(color: Theme.of(context).textTheme.bodyMedium!.color),
+                        )),
+                      ]),
+                    );
+                  }).toList(),
+                  onChanged: (value) => setState(() => selectedColor = value),
+                  isExpanded: true,
+                  underline: const SizedBox(),
+                ),
+              ),
+
+              TextFieldTitleWidget(title: 'vehicle_photo'.tr),
+
+              InkWell(
+                onTap: _chooseVehiclePhotoSource,
+                child: Container(
+                  width: double.infinity,
+                  constraints: const BoxConstraints(minHeight: 140),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    border: Border.all(width: .7, color: Theme.of(context).hintColor.withOpacity(.4)),
+                    borderRadius: BorderRadius.circular(Dimensions.paddingSizeDefault),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Dimensions.paddingSizeDefault),
+                    child: vehiclePhoto != null ?
+                    Image.file(File(vehiclePhoto!.path), height: 200, width: double.infinity, fit: BoxFit.cover) :
+                    (widget.vehicleInfo?.photoUrl != null ?
+                    Image.network(widget.vehicleInfo!.photoUrl!, height: 200, width: double.infinity, fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const SizedBox(height: 140, child: Center(child: Icon(Icons.photo_camera, size: 36))),
+                    ) :
+                    Padding(
+                      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        Icon(Icons.add_a_photo_outlined, size: 36, color: Theme.of(context).primaryColor),
+                        const SizedBox(height: Dimensions.paddingSizeSmall),
+                        Text('vehicle_photo_hint'.tr, textAlign: TextAlign.center, style: textRegular.copyWith(
+                          color: Theme.of(context).hintColor,
+                        )),
+                      ]),
+                    )),
+                  ),
+                ),
+              ),
+
               if(widget.vehicleInfo == null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, Dimensions.paddingSizeDefault, 0, 0),
@@ -408,6 +522,10 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
                     showCustomSnackBar('expire_date_is_required'.tr);
                   }else if(fuelType == 'Select Fuel type'){
                     showCustomSnackBar('fuel_type_is_required'.tr);
+                  }else if(selectedColor == null){
+                    showCustomSnackBar('vehicle_color_is_required'.tr);
+                  }else if(widget.vehicleInfo == null && vehiclePhoto == null){
+                    showCustomSnackBar('vehicle_photo_is_required'.tr);
                   }else{
                     VehicleBody body = VehicleBody(
                         brandId: brandId,
@@ -420,12 +538,13 @@ class _VehicleAddScreenState extends State<VehicleAddScreen> {
                         fuelType: fuelType,
                         driverId: profileController.profileInfo!.id??"123456789",
                         ownership: 'driver',
-                        parcelCapacityWeight: parcelWeightCapacity.text.trim()
+                        parcelCapacityWeight: parcelWeightCapacity.text.trim(),
+                        color: selectedColor,
                     );
                     if(widget.vehicleInfo == null){
-                      profileController.addNewVehicle(body);
+                      profileController.addNewVehicle(body, vehiclePhoto: vehiclePhoto);
                     }else{
-                      profileController.updateVehicle(body,Get.find<ProfileController>().driverId).then((onValue){
+                      profileController.updateVehicle(body,Get.find<ProfileController>().driverId, vehiclePhoto: vehiclePhoto).then((onValue){
                         if(onValue.statusCode == 200){
                           Get.back();
                         }

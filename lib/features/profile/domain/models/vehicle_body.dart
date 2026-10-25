@@ -10,6 +10,7 @@ class VehicleBody {
   String? driverId;
   String? ownership;
   String? parcelCapacityWeight;
+  String? color;
 
   VehicleBody(
       {this.brandId,
@@ -22,7 +23,8 @@ class VehicleBody {
         this.fuelType,
         this.driverId,
         this.ownership,
-        this.parcelCapacityWeight
+        this.parcelCapacityWeight,
+        this.color
       });
 
   VehicleBody.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class VehicleBody {
     driverId = json['driver_id'];
     ownership = json['ownership'];
     parcelCapacityWeight = json['parcel_weight_capacity'];
+    color = json['color'];
   }
 
   Map<String, String> toJson() {
@@ -52,6 +55,9 @@ class VehicleBody {
     data['driver_id'] = driverId!;
     data['ownership'] = ownership!;
     data['parcel_weight_capacity'] = parcelCapacityWeight!;
+    if(color != null && color!.isNotEmpty) {
+      data['color'] = color!;
+    }
     return data;
   }
 }

@@ -10,8 +10,8 @@ abstract class ProfileServiceInterface {
   Future<dynamic> getVehicleModelList(int offset);
   Future<dynamic> getVehicleBrandList(int offset);
   Future<dynamic> getCategoryList(int offset);
-  Future<dynamic> addNewVehicle(VehicleBody vehicleBody, List<MultipartDocument> file );
-  Future<dynamic> updateVehicle(VehicleBody vehicleBody, String driverId);
+  Future<dynamic> addNewVehicle(VehicleBody vehicleBody, List<MultipartDocument> file, {XFile? vehiclePhoto} );
+  Future<dynamic> updateVehicle(VehicleBody vehicleBody, String driverId, {XFile? vehiclePhoto});
   Future<dynamic> updateProfileInfo(
       String firstName, String lastname,String email,
       String identityType, String identityNumber,

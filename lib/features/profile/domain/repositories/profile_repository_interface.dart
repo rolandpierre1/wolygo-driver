@@ -13,8 +13,8 @@ abstract class ProfileRepositoryInterface implements RepositoryInterface{
   Future<Response?> getVehicleModelList(int offset);
   Future<Response?> getVehicleBrandList(int offset);
   Future<Response?> getCategoryList(int offset);
-  Future<Response?> addNewVehicle(VehicleBody vehicleBody, List<MultipartDocument> file );
-  Future<Response?> updateVehicle(VehicleBody vehicleBody,String driverId);
+  Future<Response?> addNewVehicle(VehicleBody vehicleBody, List<MultipartDocument> file, {XFile? vehiclePhoto} );
+  Future<Response?> updateVehicle(VehicleBody vehicleBody,String driverId, {XFile? vehiclePhoto});
   Future<Response?> updateProfileInfo(
       String firstName, String lastname,String email,
       String identityType, String identityNumber,
