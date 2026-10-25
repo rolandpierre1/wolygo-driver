@@ -774,5 +774,6 @@
   "permanently_delete_confirm_msg": "Êtes-vous sûr? Vous voulez supprimer définitivement votre compte. Vous ne pourrez plus le récupérer par la suite.",
   "for_demo_purpose_use": "À des fins de démonstration, utilisez 000000 comme code OTP",
   "denied_note": "Note de refus",
-  "approval_note": "Note d'approbation"
+  "approval_note": "Note d'approbation",
+  "vehicle_update_pending_approval": "Véhicule mis à jour. Il sera activé après l'approbation de l'administrateur."
 }

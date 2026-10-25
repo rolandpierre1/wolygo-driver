@@ -341,7 +341,11 @@ class ProfileController extends GetxController implements GetxService{
       creating = false;
       getProfileInfo().then((value) {
         if(value.statusCode == 200){
-          showCustomSnackBar('vehicle_update_successfully'.tr, isError: false);
+          final bool pendingApproval = response.body is Map && response.body['response_code'] == 'vehicle_update_pending';
+          showCustomSnackBar(
+            pendingApproval ? 'vehicle_update_pending_approval'.tr : 'vehicle_update_successfully'.tr,
+            isError: false,
+          );
         }
       });
     }else{

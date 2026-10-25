@@ -774,5 +774,6 @@
   "permanently_delete_confirm_msg": "Are you sure? You want to permanently delete your account. You cant retrieve this account in future",
   "for_demo_purpose_use": "For demo purpose use 000000 as OTP",
   "denied_note": "Denied Note",
-  "approval_note": "Approval Note"
+  "approval_note": "Approval Note",
+  "vehicle_update_pending_approval": "Vehicle updated. It will be activated after admin approval."
 }

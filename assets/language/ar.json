@@ -767,5 +767,6 @@
   "file_already_downloaded": "تم تنزيل الملف بالفعل",
   "downloaded_successfully": "تم التنزيل بنجاح",
   "download_failed": "فشل التنزيل",
-  "approval_note": "مذكرة الموافقة"
+  "approval_note": "مذكرة الموافقة",
+  "vehicle_update_pending_approval": "تم تحديث المركبة. سيتم تفعيلها بعد موافقة المسؤول."
 }
