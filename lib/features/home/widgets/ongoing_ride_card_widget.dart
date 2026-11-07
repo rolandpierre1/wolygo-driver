@@ -39,7 +39,7 @@ class OngoingRideCardWidget extends StatelessWidget {
            }
 
            onGoingHr = DateTime.now().difference(DateTime.parse(rideController.ongoingTrip![0].createdAt!)).inHours;
-           onGoingMin = DateTime.now().difference(DateTime.parse(rideController.ongoingTrip![0].createdAt!)).inHours;
+           onGoingMin = DateTime.now().difference(DateTime.parse(rideController.ongoingTrip![0].createdAt!)).inMinutes.remainder(60);
 
            for(int i =0; i< extraRoute.length; i++){
              if(extraRoute[i] != ''){
@@ -133,17 +133,17 @@ class OngoingRideCardWidget extends StatelessWidget {
 
 
                 Padding(padding: const EdgeInsets.only(top:Dimensions.paddingSizeSmall),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center,children: [
+                  child: FittedBox(fit: BoxFit.scaleDown, child: Row(mainAxisAlignment: MainAxisAlignment.center,children: [
                     Text(rideController.orderStatusSelectedIndex == 0
                         ? '${'ongoing_trip_time'.tr}:':'${'ongoing_trip_distance'.tr}:',
                         style: textRegular.copyWith(color: Get.isDarkMode? Theme.of(context).hintColor : Theme.of(context).primaryColor.withOpacity(.5))),
                     Padding(padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall),
                       child: Text(rideController.orderStatusSelectedIndex == 0?
-                          '${onGoingHr.toString()}:$onGoingMin': rideController.ongoingTrip![0].estimatedDistance!.toStringAsFixed(2),
+                          '${onGoingHr.toString()}:${onGoingMin.toString().padLeft(2, '0')}': rideController.ongoingTrip![0].estimatedDistance!.toStringAsFixed(2),
                           style: textBold.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeLarge)),),
                     Text(rideController.orderStatusSelectedIndex == 0?'Hour'.tr:'km'.tr,
                         style: textRegular.copyWith(color:Get.isDarkMode? Theme.of(context).hintColor : Theme.of(context).primaryColor.withOpacity(.5))),
-                  ],),
+                  ],),),
                 ),
 
                 const SizedBox(height: Dimensions.paddingSizeDefault),
