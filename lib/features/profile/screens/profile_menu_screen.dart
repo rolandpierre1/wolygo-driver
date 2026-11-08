@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ride_sharing_user_app/features/html/domain/html_enum_types.dart';
 import 'package:ride_sharing_user_app/features/profile/controllers/profile_controller.dart';
 import 'package:ride_sharing_user_app/features/refer_and_earn/screens/refer_and_earn_screen.dart';
@@ -66,6 +67,10 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
 
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Portefeuille et retraits',
             onTap: ()=> Get.to(()=> const WolygoWalletScreen()),
+          ),
+
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Devenir déménageur',
+            onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
           ),
 
           ProfileMenuItem(icon: Images.helpAndSupportIcon, title: 'help_and_support',
