@@ -2,6 +2,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ride_sharing_user_app/features/auth/screens/otp_log_in_screen.dart';
 import 'package:ride_sharing_user_app/features/auth/screens/sign_up_screen.dart';
 import 'package:ride_sharing_user_app/features/html/domain/html_enum_types.dart';
@@ -266,6 +267,17 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         ),
                       ]),
+                      const SizedBox(height: Dimensions.paddingSizeSmall),
+                      Center(child: TextButton(
+                        onPressed: () => launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
+                        child: Text('Devenir partenaire déménageur',
+                          style: textMedium.copyWith(
+                            decoration: TextDecoration.underline,
+                            color: Theme.of(context).primaryColor,
+                            decorationColor: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      )),
                       SizedBox(height: MediaQuery.of(context).size.height*0.1),
 
                       InkWell(
