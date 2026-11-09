@@ -7,6 +7,7 @@ import 'package:ride_sharing_user_app/features/profile/controllers/profile_contr
 import 'package:ride_sharing_user_app/features/refer_and_earn/screens/refer_and_earn_screen.dart';
 import 'package:ride_sharing_user_app/features/ride/controllers/ride_controller.dart';
 import 'package:ride_sharing_user_app/features/wallet/screens/wolygo_wallet_screen.dart';
+import 'package:ride_sharing_user_app/features/rental/screens/rental_list_screen.dart';
 import 'package:ride_sharing_user_app/util/dimensions.dart';
 import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/util/styles.dart';
@@ -71,6 +72,10 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
 
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Devenir déménageur',
             onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
+          ),
+
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Louer un véhicule',
+            onTap: ()=> Get.to(()=> const RentalListScreen()),
           ),
 
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Partenaire location véhicule',
