@@ -73,6 +73,10 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
             onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
           ),
 
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Partenaire location véhicule',
+            onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/location/inscription'), mode: LaunchMode.externalApplication),
+          ),
+
           ProfileMenuItem(icon: Images.helpAndSupportIcon, title: 'help_and_support',
             onTap: ()=> Get.to(()=> const HelpAndSupportScreen()),
           ),
