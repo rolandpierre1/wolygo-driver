@@ -82,6 +82,45 @@ class _SignInScreenState extends State<SignInScreen> {
                           fontSize: Dimensions.fontSizeLarge,
                         ),
                       ),
+                      const SizedBox(height: Dimensions.paddingSizeSmall),
+                      Wrap(alignment: WrapAlignment.center, children: [
+                        TextButton(
+                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
+                          child: Text('Devenir partenaire déménageur',
+                            style: textMedium.copyWith(
+                              fontSize: Dimensions.fontSizeSmall,
+                              decoration: TextDecoration.underline,
+                              color: Theme.of(context).primaryColor,
+                              decorationColor: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/location/inscription'), mode: LaunchMode.externalApplication),
+                          child: Text('Partenaire location véhicule',
+                            style: textMedium.copyWith(
+                              fontSize: Dimensions.fontSizeSmall,
+                              decoration: TextDecoration.underline,
+                              color: Theme.of(context).primaryColor,
+                              decorationColor: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/repas/inscription'), mode: LaunchMode.externalApplication),
+                          child: Text('Partenaire restaurant',
+                            style: textMedium.copyWith(
+                              fontSize: Dimensions.fontSizeSmall,
+                              decoration: TextDecoration.underline,
+                              color: Theme.of(context).primaryColor,
+                              decorationColor: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ]),
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
 
                       Row(children: [
@@ -268,44 +307,6 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ]),
                       const SizedBox(height: Dimensions.paddingSizeSmall),
-                      Wrap(alignment: WrapAlignment.center, children: [
-                        TextButton(
-                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
-                          child: Text('Devenir partenaire déménageur',
-                            style: textMedium.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
-                              decoration: TextDecoration.underline,
-                              color: Theme.of(context).primaryColor,
-                              decorationColor: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/location/inscription'), mode: LaunchMode.externalApplication),
-                          child: Text('Partenaire location véhicule',
-                            style: textMedium.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
-                              decoration: TextDecoration.underline,
-                              color: Theme.of(context).primaryColor,
-                              decorationColor: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/repas/inscription'), mode: LaunchMode.externalApplication),
-                          child: Text('Partenaire restaurant',
-                            style: textMedium.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
-                              decoration: TextDecoration.underline,
-                              color: Theme.of(context).primaryColor,
-                              decorationColor: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
-                      ]),
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
 
                       InkWell(
