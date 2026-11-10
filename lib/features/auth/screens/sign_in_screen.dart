@@ -68,7 +68,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 return Center(child: SingleChildScrollView(
                   child: Padding(padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
                     child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      const SizedBox(height: Dimensions.paddingSizeSignUp),
+                      const SizedBox(height: Dimensions.paddingSizeDefault),
 
                       ClipRRect(
                         borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
@@ -82,7 +82,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           fontSize: Dimensions.fontSizeLarge,
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.1),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
 
                       Row(children: [
                         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
@@ -268,37 +268,45 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ]),
                       const SizedBox(height: Dimensions.paddingSizeSmall),
-                      Center(child: TextButton(
-                        onPressed: () => launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
-                        child: Text('Devenir partenaire déménageur',
-                          style: textMedium.copyWith(
-                            decoration: TextDecoration.underline,
-                            color: Theme.of(context).primaryColor,
-                            decorationColor: Theme.of(context).primaryColor,
+                      Wrap(alignment: WrapAlignment.center, children: [
+                        TextButton(
+                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
+                          child: Text('Devenir partenaire déménageur',
+                            style: textMedium.copyWith(
+                              fontSize: Dimensions.fontSizeSmall,
+                              decoration: TextDecoration.underline,
+                              color: Theme.of(context).primaryColor,
+                              decorationColor: Theme.of(context).primaryColor,
+                            ),
                           ),
                         ),
-                      )),
-                      Center(child: TextButton(
-                        onPressed: () => launchUrl(Uri.parse('https://wolygo.com/location/inscription'), mode: LaunchMode.externalApplication),
-                        child: Text('Partenaire location véhicule',
-                          style: textMedium.copyWith(
-                            decoration: TextDecoration.underline,
-                            color: Theme.of(context).primaryColor,
-                            decorationColor: Theme.of(context).primaryColor,
+                        TextButton(
+                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/location/inscription'), mode: LaunchMode.externalApplication),
+                          child: Text('Partenaire location véhicule',
+                            style: textMedium.copyWith(
+                              fontSize: Dimensions.fontSizeSmall,
+                              decoration: TextDecoration.underline,
+                              color: Theme.of(context).primaryColor,
+                              decorationColor: Theme.of(context).primaryColor,
+                            ),
                           ),
                         ),
-                      )),
-                      Center(child: TextButton(
-                        onPressed: () => launchUrl(Uri.parse('https://wolygo.com/repas/inscription'), mode: LaunchMode.externalApplication),
-                        child: Text('Partenaire restaurant',
-                          style: textMedium.copyWith(
-                            decoration: TextDecoration.underline,
-                            color: Theme.of(context).primaryColor,
-                            decorationColor: Theme.of(context).primaryColor,
+                        TextButton(
+                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/repas/inscription'), mode: LaunchMode.externalApplication),
+                          child: Text('Partenaire restaurant',
+                            style: textMedium.copyWith(
+                              fontSize: Dimensions.fontSizeSmall,
+                              decoration: TextDecoration.underline,
+                              color: Theme.of(context).primaryColor,
+                              decorationColor: Theme.of(context).primaryColor,
+                            ),
                           ),
                         ),
-                      )),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.1),
+                      ]),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
 
                       InkWell(
                         onTap: ()=> Get.to(()=> const PolicyViewerScreen(htmlType: HtmlType.termsAndConditions)),
