@@ -783,6 +783,7 @@
   "vehicle_photo_hint": "Ajoutez une photo claire de votre véhicule (avant ou côté, plaque visible). Elle sera montrée au client.",
   "vehicle_photo_take": "Prendre une photo",
   "vehicle_photo_gallery": "Choisir dans la galerie",
+  "vehicle_doc_file": "Choisir un fichier",
   "vehicle_photo_is_required": "La photo du véhicule est requise",
   "vehicle_photo_error": "Impossible d'ajouter la photo. Réessayez.",
   "color_black": "Noir",

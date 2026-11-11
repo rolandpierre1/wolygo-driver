@@ -13,6 +13,7 @@ import 'package:ride_sharing_user_app/features/profile/domain/models/vehicle_bra
 import 'package:ride_sharing_user_app/features/profile/domain/models/categoty_model.dart';
 import 'package:ride_sharing_user_app/helper/country_code_picke.dart';
 import 'package:ride_sharing_user_app/helper/display_helper.dart';
+import 'package:ride_sharing_user_app/helper/image_source_picker.dart';
 import 'package:ride_sharing_user_app/helper/pusher_helper.dart';
 import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/features/auth/domain/models/signup_body.dart';
@@ -103,7 +104,7 @@ class AuthController extends GetxController implements GetxService {
   void setSignupGender(String g) { signupGender = g; update(); }
   void setSignupIdKind(String k) { signupIdKind = k; update(); }
   Future<void> pickSdoc(String key) async {
-    final XFile? f = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final XFile? f = await pickPhotoWithChoice();
     if(f != null) { sdocs[key] = f; update(); }
   }
   void removeSdoc(String key) { sdocs.remove(key); update(); }
@@ -156,7 +157,7 @@ class AuthController extends GetxController implements GetxService {
   void setSignupFuel(String fuel) { signupFuel = fuel; update(); }
 
   Future<void> pickVehicleDoc() async {
-    final XFile? f = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final XFile? f = await pickPhotoWithChoice();
     if(f != null) { vehicleDocImages.add(f); update(); }
   }
 
@@ -172,10 +173,10 @@ class AuthController extends GetxController implements GetxService {
 
   void pickImage(bool isBack, bool isProfile) async {
        if(isProfile){
-        final XFile? picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+        final XFile? picked = await pickPhotoWithChoice();
         if(picked != null) { _pickedProfileFile = picked; }
       } else{
-         final XFile? picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+         final XFile? picked = await pickPhotoWithChoice();
          if(picked != null) {
            identityImage = picked;
            identityImages.add(identityImage);

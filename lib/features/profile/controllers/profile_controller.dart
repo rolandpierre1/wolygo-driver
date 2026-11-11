@@ -15,6 +15,7 @@ import 'package:ride_sharing_user_app/features/map/controllers/map_controller.da
 import 'package:ride_sharing_user_app/features/profile/domain/models/level_model.dart';
 import 'package:ride_sharing_user_app/features/profile/domain/services/profile_service_interface.dart';
 import 'package:ride_sharing_user_app/helper/display_helper.dart';
+import 'package:ride_sharing_user_app/helper/image_source_picker.dart';
 import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/features/auth/controllers/auth_controller.dart';
 import 'package:ride_sharing_user_app/features/location/controllers/location_controller.dart';
@@ -380,7 +381,24 @@ class ProfileController extends GetxController implements GetxService{
     if(isRemove){
       _otherFile=null;
     }else{
-      _otherFile = (await FilePicker.platform.pickFiles(withReadStream: true))!;
+      final String? source = await chooseUploadSource(allowFile: true);
+      if (source == null) { return false; }
+      if (source == 'file') {
+        _otherFile = await FilePicker.platform.pickFiles(withReadStream: true);
+      } else {
+        try {
+          final XFile? shot = await ImagePicker().pickImage(
+            source: source == 'camera' ? ImageSource.camera : ImageSource.gallery,
+            imageQuality: 85, maxWidth: 2000, maxHeight: 2000,
+          );
+          if (shot != null) {
+            final int size = await shot.length();
+            _otherFile = FilePickerResult([PlatformFile(name: shot.name, size: size, path: shot.path, readStream: File(shot.path).openRead())]);
+          }
+        } catch (_) {
+          showCustomSnackBar('vehicle_photo_error'.tr);
+        }
+      }
       if (_otherFile != null) {
         listOfDocuments.add(_otherFile!);
         objFile = _otherFile!.files.single;

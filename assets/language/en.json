@@ -783,6 +783,7 @@
   "vehicle_photo_hint": "Add a clear photo of your vehicle (front or side, plate visible). It will be shown to the customer.",
   "vehicle_photo_take": "Take a photo",
   "vehicle_photo_gallery": "Choose from gallery",
+  "vehicle_doc_file": "Choose a file",
   "vehicle_photo_is_required": "Vehicle photo is required",
   "vehicle_photo_error": "Could not add the photo. Please try again.",
   "color_black": "Black",

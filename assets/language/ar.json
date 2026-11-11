@@ -776,6 +776,7 @@
   "vehicle_photo_hint": "أضف صورة واضحة لمركبتك (من الأمام أو الجانب مع ظهور اللوحة). ستظهر للعميل.",
   "vehicle_photo_take": "التقاط صورة",
   "vehicle_photo_gallery": "اختيار من المعرض",
+  "vehicle_doc_file": "اختيار ملف",
   "vehicle_photo_is_required": "صورة المركبة مطلوبة",
   "vehicle_photo_error": "تعذّر إضافة الصورة. حاول مرة أخرى.",
   "color_black": "أسود",
