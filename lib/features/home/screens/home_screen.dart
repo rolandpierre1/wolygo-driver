@@ -1,3 +1,4 @@
+import 'package:ride_sharing_user_app/features/food/food_pref_sync.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ride_sharing_user_app/features/home/widgets/home_bottom_sheet_widget.dart';
@@ -66,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
   Future<void> loadData() async{
+    FoodPrefSync.run();
     Get.find<ProfileController>().getCategoryList(1);
     Get.find<ProfileController>().getProfileInfo();
     Get.find<ProfileController>().getDailyLog();

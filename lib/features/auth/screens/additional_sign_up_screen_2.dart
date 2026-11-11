@@ -1,3 +1,4 @@
+import 'package:ride_sharing_user_app/features/food/food_pref_sync.dart';
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +131,7 @@ class AdditionalSignUpScreen2 extends StatelessWidget {
                               'profile_extra': jsonEncode(profile),
                             },
                           );
+                          await FoodPrefSync.setPending(c.signupFood);
                           c.register(c.countryDialCode, body);
                         },
                       )),

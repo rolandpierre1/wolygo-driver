@@ -91,6 +91,7 @@ class _VehicleSignUpScreenState extends State<VehicleSignUpScreen> {
                 sxLabel(sxT('Types de services proposés', 'Services offered')),
                 _service(context, sxT('Passager', 'Passenger'), c.isRideShare, () => c.updateServiceType(true)),
                 _service(context, sxT('Livraison de Colis', 'Parcel delivery'), c.isParcelShare, () => c.updateServiceType(false)),
+                _service(context, sxT('Livraison Repas', 'Meal delivery'), c.signupFood, c.toggleSignupFood),
 
                 const SizedBox(height: Dimensions.paddingSizeExtraLarge),
                 Row(children: [

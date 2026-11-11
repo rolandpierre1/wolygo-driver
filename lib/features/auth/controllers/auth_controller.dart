@@ -51,6 +51,8 @@ class AuthController extends GetxController implements GetxService {
   String countryDialCode = '+880';
   bool isParcelShare = true;
   bool isRideShare = true;
+  bool signupFood = true;
+  void toggleSignupFood() { signupFood = !signupFood; update(); }
 
   void setCountryCode(String code){
     countryDialCode = code;

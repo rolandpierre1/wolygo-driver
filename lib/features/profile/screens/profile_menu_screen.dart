@@ -9,6 +9,7 @@ import 'package:ride_sharing_user_app/features/ride/controllers/ride_controller.
 import 'package:ride_sharing_user_app/features/wallet/screens/wolygo_wallet_screen.dart';
 import 'package:ride_sharing_user_app/features/rental/screens/rental_list_screen.dart';
 import 'package:ride_sharing_user_app/features/food/screens/food_deliveries_screen.dart';
+import 'package:ride_sharing_user_app/features/food/widgets/food_pref_tile.dart';
 import 'package:ride_sharing_user_app/util/dimensions.dart';
 import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/util/styles.dart';
@@ -74,6 +75,8 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Devenir déménageur',
             onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
           ),
+
+          const FoodPrefTile(),
 
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Livraisons Repas',
             onTap: ()=> Get.to(()=> const FoodDeliveriesScreen()),
