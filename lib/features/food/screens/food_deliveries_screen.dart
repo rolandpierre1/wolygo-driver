@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ride_sharing_user_app/data/api_client.dart';
 import 'package:ride_sharing_user_app/helper/display_helper.dart';
+import 'package:ride_sharing_user_app/helper/image_source_picker.dart';
 
 /// Livraisons Repas: offres disponibles et livraison en cours.
 class FoodDeliveriesScreen extends StatefulWidget {
@@ -70,9 +71,9 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
     _load(silent: true);
   }
 
-  Future<void> _act(String path, String okMsg) async {
+  Future<void> _act(String path, String okMsg, {Map<String, dynamic>? body}) async {
     setState(() => _busy = true);
-    final r = await _api.postData(path, {});
+    final r = await _api.postData(path, body ?? {});
     String msg = okMsg;
     if (r.statusCode != 200) {
       msg = 'Action impossible.';
@@ -81,6 +82,59 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
       } catch (_) {}
     }
     showCustomSnackBar(msg, isError: r.statusCode != 200);
+    if (mounted) setState(() => _busy = false);
+    _load();
+  }
+
+  Future<void> _deliver(Map<String, dynamic> o) async {
+    final mode = await Get.bottomSheet<String>(
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(color: Get.theme.cardColor, borderRadius: const BorderRadius.vertical(top: Radius.circular(20))),
+        child: SafeArea(child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const Padding(padding: EdgeInsets.only(bottom: 8), child: Text('Comment as-tu remis la commande ?', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16))),
+          ListTile(leading: const Icon(Icons.handshake_outlined), title: const Text('Remise en main propre'), onTap: () => Get.back(result: 'hand')),
+          ListTile(leading: const Icon(Icons.photo_camera_outlined), title: const Text('Déposée (photo obligatoire)'), onTap: () => Get.back(result: 'dropped')),
+        ])),
+      ),
+    );
+    if (mode == null) return;
+    if (mode == 'hand') {
+      await _act('/api/driver/food/orders/${o['id']}/delivered', 'Livraison terminée ✅', body: {'mode': 'hand'});
+      return;
+    }
+    final photo = await pickPhotoWithChoice();
+    if (photo == null) {
+      showCustomSnackBar('La photo est obligatoire quand la commande est déposée.');
+      return;
+    }
+    final noteC = TextEditingController();
+    final go = await Get.dialog<bool>(AlertDialog(
+      title: const Text('Où as-tu déposé la commande ?'),
+      content: TextField(controller: noteC, maxLength: 150, decoration: const InputDecoration(hintText: 'Ex : devant la porte, avec le gardien')),
+      actions: [
+        TextButton(onPressed: () => Get.back(result: false), child: const Text('Annuler')),
+        TextButton(onPressed: () => Get.back(result: true), child: const Text('Terminer la livraison')),
+      ],
+    ));
+    if (go != true) return;
+    setState(() => _busy = true);
+    String msg = 'Livraison terminée ✅';
+    bool ok = false;
+    try {
+      final r = await _api.postMultipartData('/api/driver/food/orders/${o['id']}/delivered',
+          {'mode': 'dropped', 'note': noteC.text.trim()}, [MultipartBody('photo', photo)], null, []);
+      ok = r.statusCode == 200;
+      if (!ok) {
+        msg = 'Envoi impossible. Réessaie.';
+        try {
+          if (r.body is Map && r.body['message'] != null) msg = '${r.body['message']}';
+        } catch (_) {}
+      }
+    } catch (_) {
+      msg = 'Envoi impossible. Réessaie.';
+    }
+    showCustomSnackBar(msg, isError: !ok);
     if (mounted) setState(() => _busy = false);
     _load();
   }
@@ -164,6 +218,16 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
           ]),
           const SizedBox(height: 4),
           Text(picked ? 'En route vers le client' : (o['status'] == 'ready' ? 'Commande prête — va la récupérer' : (o['status'] == 'placed' ? 'En attente que le restaurant accepte' : 'En préparation — va au restaurant')), style: TextStyle(color: primary, fontWeight: FontWeight.w600)),
+          if ((o['code'] ?? '').toString().isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 8, bottom: 4),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: const Color(0xFFFFF3CD), borderRadius: BorderRadius.circular(12)),
+              child: Row(children: [
+                Expanded(child: Text('Au restaurant, présente-toi avec le nom du client et ce code :\n${o['customer_name'] ?? ''}', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600))),
+                Text('${o['code']}', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w900, letterSpacing: 3, color: Colors.black)),
+              ]),
+            ),
           const SizedBox(height: 6),
           for (final it in (o['items'] as List)) Text('$it'),
           if ((o['note'] ?? '').toString().isNotEmpty) Text('Note : ${o['note']}'),
@@ -175,7 +239,7 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
-              onPressed: (_busy || o['status'] == 'placed') ? null : () => picked ? _act('/api/driver/food/orders/${o['id']}/delivered', 'Livraison terminée ✅') : _act('/api/driver/food/orders/${o['id']}/picked', 'Commande récupérée'),
+              onPressed: (_busy || o['status'] == 'placed') ? null : () => picked ? _deliver(o) : _act('/api/driver/food/orders/${o['id']}/picked', 'Commande récupérée'),
               child: Text(picked ? 'J\'ai livré la commande' : 'J\'ai récupéré la commande'),
             ),
           ),
