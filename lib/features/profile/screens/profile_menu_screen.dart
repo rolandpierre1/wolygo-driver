@@ -10,6 +10,7 @@ import 'package:ride_sharing_user_app/features/wallet/screens/wolygo_wallet_scre
 import 'package:ride_sharing_user_app/features/rental/screens/rental_list_screen.dart';
 import 'package:ride_sharing_user_app/features/food/screens/food_deliveries_screen.dart';
 import 'package:ride_sharing_user_app/features/food/widgets/food_pref_tile.dart';
+import 'package:ride_sharing_user_app/features/documents/my_documents_screen.dart';
 import 'package:ride_sharing_user_app/util/dimensions.dart';
 import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/util/styles.dart';
@@ -77,6 +78,10 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
           ),
 
           const FoodPrefTile(),
+
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Mes documents',
+            onTap: ()=> Get.to(()=> const MyDocumentsScreen()),
+          ),
 
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Livraisons Repas',
             onTap: ()=> Get.to(()=> const FoodDeliveriesScreen()),
