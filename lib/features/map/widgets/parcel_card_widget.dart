@@ -17,6 +17,7 @@ import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/util/styles.dart';
 import 'package:ride_sharing_user_app/common_widgets/confirmation_dialog_widget.dart';
 import 'package:ride_sharing_user_app/common_widgets/button_widget.dart';
+import 'package:ride_sharing_user_app/features/parcel_proof/parcel_proof.dart';
 import 'route_widget.dart';
 
 class ParcelRequestCardWidget extends StatelessWidget {
@@ -147,6 +148,9 @@ class ParcelRequestCardWidget extends StatelessWidget {
                 ) :
                 const SizedBox(),
 
+                if (rideRequest.id != null && (rideRequest.currentStatus == "accepted" || rideRequest.currentStatus == "ongoing"))
+                  ParcelCodeBox(tripId: rideRequest.id!),
+
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
                     Dimensions.paddingSizeDefault, Dimensions.paddingSizeSmall,
@@ -170,6 +174,10 @@ class ParcelRequestCardWidget extends StatelessWidget {
                       Expanded(child: ButtonWidget(buttonText: 'complete'.tr,
                         radius: Dimensions.paddingSizeSmall,
                         onPressed: () async {
+                          if (Get.find<RideController>().matchedMode != null && Get.find<RiderMapController>().isInside) {
+                            final proofOk = await ParcelProofFlow.ensureProof(rideRequest.id!);
+                            if (!proofOk) return;
+                          }
                           if (rideRequest.paymentStatus == 'paid') {
                             Get.dialog(ConfirmationDialogWidget(
                               icon: Images.logo,
