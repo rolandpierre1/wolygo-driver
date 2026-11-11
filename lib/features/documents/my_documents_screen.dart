@@ -146,6 +146,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00A08D), foregroundColor: Colors.white),
                               onPressed: _busy ? null : () => _send(requestId: r['id'] is int ? r['id'] as int : int.tryParse('${r['id']}')),
                               icon: const Icon(Icons.upload_file),
                               label: Text(r['file_url'] != null ? 'Remplacer' : 'Envoyer'),

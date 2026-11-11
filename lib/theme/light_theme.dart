@@ -5,7 +5,7 @@ ThemeData lightTheme = ThemeData(
   disabledColor: const Color(0xFFBABFC4),
   primaryColorDark: const Color(0xff007B6C),
   brightness: Brightness.light,
-  hintColor: const Color(0xFF9F9F9F),
+  hintColor: const Color(0xFF6E6E6E),
   cardColor: Colors.white,
   colorScheme: const ColorScheme.light(
       primary: Color(0xFFBBF9F1),
@@ -32,6 +32,8 @@ ThemeData lightTheme = ThemeData(
 
 
   ),
+  elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: const Color(0xFF202020))),
+  outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFF202020))),
   textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: const Color(0xFF00A08D))),
 
   textTheme: const TextTheme(
