@@ -60,7 +60,7 @@ class _MyDocumentsScreenState extends State<MyDocumentsScreen> {
     if (requestId != null) body['request_id'] = '$requestId';
     if (name != null) body['name'] = name;
     try {
-      final r = await _api.postMultipartData('/api/driver/documents/upload', body, [MultipartBody('file', photo)], null, []);
+      final r = await _api.postMultipartData('/api/driver/documents/submit', body, [MultipartBody('file', photo)], null, []);
       if (r.statusCode == 200) {
         showCustomSnackBar('Document envoyé. Merci !', isError: false);
         await _load();
