@@ -11,6 +11,7 @@ import 'package:ride_sharing_user_app/features/rental/screens/rental_list_screen
 import 'package:ride_sharing_user_app/features/food/screens/food_deliveries_screen.dart';
 import 'package:ride_sharing_user_app/features/food/widgets/food_pref_tile.dart';
 import 'package:ride_sharing_user_app/features/documents/my_documents_screen.dart';
+import 'package:ride_sharing_user_app/features/work_types/work_types_screen.dart';
 import 'package:ride_sharing_user_app/util/dimensions.dart';
 import 'package:ride_sharing_user_app/util/images.dart';
 import 'package:ride_sharing_user_app/util/styles.dart';
@@ -75,6 +76,10 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
 
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Devenir déménageur',
             onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/demenageur/inscription'), mode: LaunchMode.externalApplication),
+          ),
+
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Mes types de travail',
+            onTap: ()=> Get.to(()=> const WorkTypesScreen()),
           ),
 
           const FoodPrefTile(),
