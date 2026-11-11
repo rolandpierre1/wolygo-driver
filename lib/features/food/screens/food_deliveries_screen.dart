@@ -19,6 +19,7 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
   Map<String, dynamic>? _current;
   bool _loading = true;
   bool _busy = false;
+  bool _enabled = false;
   Timer? _t;
 
   @override
@@ -37,6 +38,8 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
   Future<void> _load({bool silent = false}) async {
     if (!silent) setState(() => _loading = true);
     try {
+      final st = await _api.getData('/api/driver/food/settings');
+      if (st.statusCode == 200 && st.body is Map) _enabled = st.body['enabled'] == true;
       final c = await _api.getData('/api/driver/food/current');
       if (c.statusCode == 200 && c.body is Map) {
         _current = c.body['order'] == null ? null : Map<String, dynamic>.from(c.body['order'] as Map);
@@ -49,6 +52,22 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
       }
     } catch (_) {}
     if (mounted) setState(() => _loading = false);
+  }
+
+  Future<void> _toggle(bool v) async {
+    setState(() {
+      _enabled = v;
+      _busy = true;
+    });
+    final r = await _api.postData('/api/driver/food/settings', {'enabled': v ? 1 : 0});
+    if (r.statusCode != 200) {
+      _enabled = !v;
+      showCustomSnackBar('Impossible de changer ce réglage.');
+    } else {
+      showCustomSnackBar(v ? 'Tu recevras les livraisons Repas' : 'Livraisons Repas désactivées', isError: false);
+    }
+    if (mounted) setState(() => _busy = false);
+    _load(silent: true);
   }
 
   Future<void> _act(String path, String okMsg) async {
@@ -87,7 +106,19 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
           : RefreshIndicator(
               onRefresh: _load,
               child: ListView(padding: const EdgeInsets.all(12), children: [
-                if (_current != null) _currentCard(primary)
+                Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  child: SwitchListTile(
+                    value: _enabled,
+                    onChanged: _busy ? null : _toggle,
+                    title: const Text('Accepter les livraisons Repas', style: TextStyle(fontWeight: FontWeight.w700)),
+                    subtitle: Text(_enabled ? 'Activé : tu vois les nouvelles commandes à livrer.' : 'Désactivé : active pour recevoir les commandes de restaurants.'),
+                  ),
+                ),
+                if (!_enabled && _current == null)
+                  const Padding(padding: EdgeInsets.all(24), child: Text('Active l\'option ci-dessus pour voir les livraisons Repas.', textAlign: TextAlign.center))
+                else if (_current != null) _currentCard(primary)
                 else if (_offers.isEmpty)
                   const Padding(padding: EdgeInsets.all(32), child: Text('Aucune livraison disponible pour le moment. Cette page se met à jour automatiquement.', textAlign: TextAlign.center))
                 else
@@ -104,7 +135,7 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
                               Expanded(child: Text('${o['restaurant']}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16))),
                               Text('${(o['earning'] as num).toStringAsFixed(2)} \$', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: primary)),
                             ]),
-                            Text('${o['status'] == 'ready' ? 'Prête à récupérer' : 'En préparation'} · ${o['items_count']} article(s)'),
+                            Text('${o['status'] == 'ready' ? 'Prête à récupérer' : (o['status'] == 'placed' ? 'Payée · en attente du restaurant' : 'En préparation')} · ${o['items_count']} article(s)'),
                             const SizedBox(height: 6),
                             Text('Récupérer : ${o['restaurant_address']}'),
                             Text('Livrer : ${o['delivery_address']}'),
@@ -132,7 +163,7 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
             Text('${(o['earning'] as num).toStringAsFixed(2)} \$', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: primary)),
           ]),
           const SizedBox(height: 4),
-          Text(picked ? 'En route vers le client' : (o['status'] == 'ready' ? 'Commande prête — va la récupérer' : 'En préparation — va au restaurant'), style: TextStyle(color: primary, fontWeight: FontWeight.w600)),
+          Text(picked ? 'En route vers le client' : (o['status'] == 'ready' ? 'Commande prête — va la récupérer' : (o['status'] == 'placed' ? 'En attente que le restaurant accepte' : 'En préparation — va au restaurant')), style: TextStyle(color: primary, fontWeight: FontWeight.w600)),
           const SizedBox(height: 6),
           for (final it in (o['items'] as List)) Text('$it'),
           if ((o['note'] ?? '').toString().isNotEmpty) Text('Note : ${o['note']}'),
@@ -144,7 +175,7 @@ class _FoodDeliveriesScreenState extends State<FoodDeliveriesScreen> {
             width: double.infinity,
             height: 48,
             child: ElevatedButton(
-              onPressed: _busy ? null : () => picked ? _act('/api/driver/food/orders/${o['id']}/delivered', 'Livraison terminée ✅') : _act('/api/driver/food/orders/${o['id']}/picked', 'Commande récupérée'),
+              onPressed: (_busy || o['status'] == 'placed') ? null : () => picked ? _act('/api/driver/food/orders/${o['id']}/delivered', 'Livraison terminée ✅') : _act('/api/driver/food/orders/${o['id']}/picked', 'Commande récupérée'),
               child: Text(picked ? 'J\'ai livré la commande' : 'J\'ai récupéré la commande'),
             ),
           ),
