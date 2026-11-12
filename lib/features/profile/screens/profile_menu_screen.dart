@@ -10,6 +10,8 @@ import 'package:ride_sharing_user_app/features/wallet/screens/wolygo_wallet_scre
 import 'package:ride_sharing_user_app/features/rental/screens/rental_list_screen.dart';
 import 'package:ride_sharing_user_app/features/food/screens/food_deliveries_screen.dart';
 import 'package:ride_sharing_user_app/features/food/widgets/food_pref_tile.dart';
+import 'package:ride_sharing_user_app/features/shop/screens/shop_deliveries_screen.dart';
+import 'package:ride_sharing_user_app/features/shop/widgets/shop_pref_tile.dart';
 import 'package:ride_sharing_user_app/features/documents/my_documents_screen.dart';
 import 'package:ride_sharing_user_app/features/work_types/work_types_screen.dart';
 import 'package:ride_sharing_user_app/util/dimensions.dart';
@@ -84,6 +86,8 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
 
           const FoodPrefTile(),
 
+          const ShopPrefTile(),
+
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Mes documents',
             onTap: ()=> Get.to(()=> const MyDocumentsScreen()),
           ),
@@ -92,8 +96,16 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
             onTap: ()=> Get.to(()=> const FoodDeliveriesScreen()),
           ),
 
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Livraisons Magasin',
+            onTap: ()=> Get.to(()=> const ShopDeliveriesScreen()),
+          ),
+
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Louer un véhicule',
             onTap: ()=> Get.to(()=> const RentalListScreen()),
+          ),
+
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Partenaire magasin',
+            onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/magasin/inscription'), mode: LaunchMode.externalApplication),
           ),
 
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Partenaire restaurant',

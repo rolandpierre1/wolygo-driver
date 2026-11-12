@@ -18,6 +18,7 @@ class _WorkTypesScreenState extends State<WorkTypesScreen> {
   bool _ride = true;
   bool _parcel = true;
   bool _food = false;
+  bool _shop = false;
   bool _loading = true;
   bool _busy = false;
 
@@ -38,6 +39,10 @@ class _WorkTypesScreenState extends State<WorkTypesScreen> {
       }
       final r = await _api.getData('/api/driver/food/settings');
       if (r.statusCode == 200 && r.body is Map) _food = r.body['enabled'] == true;
+      try {
+        final r2 = await _api.getData('/api/driver/shop/settings');
+        if (r2.statusCode == 200 && r2.body is Map) _shop = r2.body['enabled'] == true;
+      } catch (_) {}
     } catch (_) {}
     if (mounted) setState(() => _loading = false);
   }
@@ -109,6 +114,25 @@ class _WorkTypesScreenState extends State<WorkTypesScreen> {
     if (mounted) setState(() => _busy = false);
   }
 
+  Future<void> _toggleShop(bool v) async {
+    setState(() {
+      _shop = v;
+      _busy = true;
+    });
+    bool ok = false;
+    try {
+      final r = await _api.postData('/api/driver/shop/settings', {'enabled': v ? 1 : 0});
+      ok = r.statusCode == 200;
+    } catch (_) {}
+    if (!ok) {
+      _shop = !v;
+      showCustomSnackBar('Impossible de changer ce réglage. Réessaie.');
+    } else {
+      showCustomSnackBar('Enregistré', isError: false);
+    }
+    if (mounted) setState(() => _busy = false);
+  }
+
   Widget _tile(String title, String sub, bool value, ValueChanged<bool> onChanged) => Card(
         margin: const EdgeInsets.only(bottom: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -135,6 +159,7 @@ class _WorkTypesScreenState extends State<WorkTypesScreen> {
               _tile('Passager', 'Transporter des passagers', _ride, (v) => _toggleService(ride: v)),
               _tile('Livraison de colis', 'Livrer des colis', _parcel, (v) => _toggleService(parcel: v)),
               _tile('Livraison Repas', 'Livrer des commandes de restaurants', _food, _toggleFood),
+              _tile('Livraison Magasin', 'Livrer des commandes de magasins', _shop, _toggleShop),
             ]),
     );
   }
