@@ -120,6 +120,18 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                           ),
                         ),
+                        TextButton(
+                          style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          onPressed: () => launchUrl(Uri.parse('https://wolygo.com/livreur/inscription'), mode: LaunchMode.externalApplication),
+                          child: Text('Devenir livreur',
+                            style: textMedium.copyWith(
+                              fontSize: Dimensions.fontSizeSmall,
+                              decoration: TextDecoration.underline,
+                              color: Theme.of(context).primaryColor,
+                              decorationColor: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
                       ]),
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
 
