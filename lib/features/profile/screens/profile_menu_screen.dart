@@ -104,6 +104,10 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
             onTap: ()=> Get.to(()=> const RentalListScreen()),
           ),
 
+          ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Devenir livreur WolyGo Eat',
+            onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/livreur/inscription'), mode: LaunchMode.externalApplication),
+          ),
+
           ProfileMenuItem(icon: Images.leaderBoardIcon, title: 'Partenaire magasin',
             onTap: ()=> launchUrl(Uri.parse('https://wolygo.com/magasin/inscription'), mode: LaunchMode.externalApplication),
           ),
