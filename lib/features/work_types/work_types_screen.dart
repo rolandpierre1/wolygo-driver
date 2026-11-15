@@ -16,6 +16,7 @@ class WorkTypesScreen extends StatefulWidget {
 class _WorkTypesScreenState extends State<WorkTypesScreen> {
   ApiClient get _api => Get.find<ApiClient>();
   bool _ride = true;
+  bool _showRide = true; // faux pour un livreur (compte sans transport de passagers)
   bool _parcel = true;
   bool _food = false;
   bool _shop = false;
@@ -35,6 +36,7 @@ class _WorkTypesScreenState extends State<WorkTypesScreen> {
       final s = pc.profileInfo?.details?.services;
       if (s != null && s.isNotEmpty) {
         _ride = s.contains('ride_request');
+        _showRide = _ride;
         _parcel = s.contains('parcel');
       }
       final r = await _api.getData('/api/driver/food/settings');
@@ -156,7 +158,7 @@ class _WorkTypesScreenState extends State<WorkTypesScreen> {
                 child: Text('Choisis comment tu veux travailler. Tu peux changer quand tu veux.'),
               ),
               if (_busy) const Padding(padding: EdgeInsets.only(bottom: 8), child: LinearProgressIndicator()),
-              _tile('Passager', 'Transporter des passagers', _ride, (v) => _toggleService(ride: v)),
+              if (_showRide) _tile('Passager', 'Transporter des passagers', _ride, (v) => _toggleService(ride: v)),
               _tile('Livraison de colis', 'Livrer des colis', _parcel, (v) => _toggleService(parcel: v)),
               _tile('Livraison Repas', 'Livrer des commandes de restaurants', _food, _toggleFood),
               _tile('Livraison Magasin', 'Livrer des commandes de magasins', _shop, _toggleShop),
