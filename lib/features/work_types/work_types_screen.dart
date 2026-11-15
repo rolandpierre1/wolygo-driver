@@ -16,7 +16,7 @@ class WorkTypesScreen extends StatefulWidget {
 class _WorkTypesScreenState extends State<WorkTypesScreen> {
   ApiClient get _api => Get.find<ApiClient>();
   bool _ride = true;
-  bool _showRide = true; // faux pour un livreur (compte sans transport de passagers)
+  bool _showRide = true; // faux seulement si le serveur dit que le compte est un livreur
   bool _parcel = true;
   bool _food = false;
   bool _shop = false;
@@ -36,11 +36,13 @@ class _WorkTypesScreenState extends State<WorkTypesScreen> {
       final s = pc.profileInfo?.details?.services;
       if (s != null && s.isNotEmpty) {
         _ride = s.contains('ride_request');
-        _showRide = _ride;
         _parcel = s.contains('parcel');
       }
       final r = await _api.getData('/api/driver/food/settings');
-      if (r.statusCode == 200 && r.body is Map) _food = r.body['enabled'] == true;
+      if (r.statusCode == 200 && r.body is Map) {
+        _food = r.body['enabled'] == true;
+        _showRide = r.body['livreur'] != true; // un livreur ne fait pas de passagers
+      }
       try {
         final r2 = await _api.getData('/api/driver/shop/settings');
         if (r2.statusCode == 200 && r2.body is Map) _shop = r2.body['enabled'] == true;
